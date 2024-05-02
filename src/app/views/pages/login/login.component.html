@@ -1,0 +1,53 @@
+<div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
+  <div class="container">
+    <c-toast #toast="cToast" [autohide]="false" [visible]="isLoginClicked"
+      class="align-items-center toast-position custom-toast" [ngClass]="{'error': error, 'success': successMessage}">
+      <ng-container *ngIf="successMessage; else errorTemplate">{{ successMessage }}</ng-container>
+      <ng-template #errorTemplate>{{ error }}</ng-template>
+    </c-toast>
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-4 col-md-6 col-sm-8">
+        <div class="card-group">
+          <div class="card pb-4">
+            <div class="card-body">
+              <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <div class="rounded-circle overflow-hidden mx-auto mb-3" style="width: 220px; height: 150px;">
+                  <img src="../../../../assets/images/diamond.png" alt="Logo" class="w-100 h-100 object-fit-fill">
+                </div>
+                <p class="text-body-secondary fs-4 fw-bold text-center">Sign in</p>
+                <div class="input-group mb-3">
+                  <span class="input-group-text">
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input autoComplete="username" cFormControl formControlName="username" placeholder="Username"
+                    class="form-control border-dark-hover fw-lighter"
+                    [ngClass]="{'is-valid': loginForm.get('username')?.value && loginForm.get('username')?.valid, 'is-invalid': loginForm.get('username')?.invalid && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)}">
+                  <div class="invalid-feedback"
+                    *ngIf="loginForm.get('username')?.invalid && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)">
+                  </div>
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text">
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input autoComplete="current-password" cFormControl formControlName="password" placeholder="Password"
+                    type="password" class="form-control border-dark-hover fw-lighter"
+                    [ngClass]="{'is-valid': loginForm.get('password')?.value && loginForm.get('password')?.valid, 'is-invalid': loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)}">
+                  <div class="invalid-feedback"
+                    *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)">
+                  </div>
+                </div>
+                <div class="row justify-content-center">
+                  <div class="col-auto">
+                    <button cButton type="submit" class="btn btn-secondary px-4 w-100"
+                      [disabled]="loginForm.invalid">Login</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
