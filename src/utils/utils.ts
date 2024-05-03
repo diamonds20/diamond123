@@ -1,14 +1,14 @@
 // utils.ts
-import { TOKEN_KEY } from '../constants/constants';
+import { CONSTANT } from '../constants/constants';
 
 export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(CONSTANT.TOKEN_KEY);
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(CONSTANT.TOKEN_KEY, token);
 }
 
 export function removeToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(CONSTANT.TOKEN_KEY);
 }
