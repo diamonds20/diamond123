@@ -38,6 +38,7 @@ import { delay, filter, map, tap } from 'rxjs/operators';
 export class DefaultHeaderComponent extends HeaderComponent {
   welcomeMessage: string = '';
 
+
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
@@ -140,13 +141,14 @@ export class DefaultHeaderComponent extends HeaderComponent {
 
   ngOnInit() {
     const userRole = this.userService.getUserRole();
+    const companyName = this.userService.getCompanyName();
 
     switch (userRole) {
       case 'superadmin':
         this.welcomeMessage = 'Welcome, SuperAdmin!';
         break;
       case 'company':
-        this.welcomeMessage = 'Welcome, Company!';
+        this.welcomeMessage = `Welcome, ${companyName}!`;
         break;
       case 'operator':
         this.welcomeMessage = 'Welcome, Operator!';

@@ -40,10 +40,18 @@ export class LoginComponent {
     });
   }
 
-  handleSuccessfulLogin(message: string, userRole: string, navRoute: string, token: string) {
+  handleSuccessfulLogin(message: string, userRole: string, navRoute: string, token: string, response: any) {
     this.successMessage = message;
     this.userRole = userRole;
     this.userService.setUserRole(userRole);
+    
+    if (userRole === CONSTANT.COMPANY) {
+      const companyName = response.name; 
+      this.userService.setCompanyName(companyName); // For company users
+    } else {
+      this.userService.setCompanyName(''); // For non-company users
+    }
+    
     this.router.navigateByUrl(navRoute);
     setToken(token);
   }
@@ -58,15 +66,15 @@ export class LoginComponent {
           if (response.isSuperAdmin) {
             // SuperAdmin login
             console.log(CONSTANT.SUPER_ADMIN_LOGGED_IN, response);
-            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.SUPERADMIN, CONSTANT.DASHBOARD_ROUTE, response.token)
+            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.SUPERADMIN, CONSTANT.DASHBOARD_ROUTE, response.token, response)
           } else if (response.isCompany) {
             // Company login
             console.log(CONSTANT.COMPANY_LOGGED_IN, response);
-            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.COMPANY, CONSTANT.DASHBOARD_ROUTE, response.token)
+            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.COMPANY, CONSTANT.DASHBOARD_ROUTE, response.token, response)
           } else if (response.isOperator) {
             // Operator login
             console.log(CONSTANT.OPERATOR_LOGGED_IN, response);
-            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.OPERATOR, CONSTANT.DASHBOARD_ROUTE, response.token)
+            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.OPERATOR, CONSTANT.DASHBOARD_ROUTE, response.token, response)
           } else {
             this.error = CONSTANT.FAILURE_WHILE_LOGIN;
           }

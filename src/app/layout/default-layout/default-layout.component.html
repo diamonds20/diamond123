@@ -18,6 +18,7 @@
 
   <ng-scrollbar #scrollbar="ngScrollbar" (updated)="onScrollbarUpdate(scrollbar.state)" class="overflow" pointerEventsMethod="scrollbar" visibility="hover">
     <!-- <c-sidebar-nav #overflow [navItems]="navItems" dropdownMode="close" compact /> -->
+    <button *ngIf="isCompany" class="btn btn-primary px-4 w-100 operator-button" (click)="navigateToOperatorsGrid()">Operator Button</button>
   </ng-scrollbar>
   @if (!sidebar1.narrow) {
     <c-sidebar-footer cSidebarToggle="sidebar1" class="border-top d-none d-lg-flex" toggle="unfoldable" style="cursor: pointer;">
