@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { cilPeople } from '@coreui/icons';
 import { CommonModule, JsonPipe } from '@angular/common';
@@ -14,10 +14,9 @@ import { iconSubset } from 'src/app/icons/icon-subset';
   templateUrl: './operators-grid.component.html',
   styleUrls: ['./operators-grid.component.scss'],
   standalone: true,
-  imports: [CommonModule, IconModule, TableModule, CardHeaderComponent, IconDirective, FormModule, GridModule, JsonPipe, ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle
-  ],
+  imports: [HttpClientModule, CommonModule, IconModule, TableModule, CardHeaderComponent, IconDirective, FormModule, GridModule, JsonPipe, ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
 })
-export class OperatorsGridComponent {
+export class OperatorsGridComponent implements OnInit {
   operators: any[] = [];
   iconSetService: IconSetService;
 
