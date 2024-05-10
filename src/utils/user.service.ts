@@ -1,26 +1,37 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+//import { UserDataService } from 'src/utils/user-data.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private userRole: string = '';
-  private companyName: string = '';
+  // constructor(private userDataService: UserDataService) {}
+  private userRoleSubject = new BehaviorSubject<string>('');
+  public userRole$ = this.userRoleSubject.asObservable();
+
+  private companyNameSubject = new BehaviorSubject<string>('');
+  public companyName$ = this.companyNameSubject.asObservable();
 
   setUserRole(role: string) {
-    this.userRole = role;
+    this.userRoleSubject.next(role);
   }
 
   setCompanyName(name: string) {
-    this.companyName = name;
-    (console.log(this.companyName))
+    this.companyNameSubject.next(name);
+    console.log(name); // You can remove this line if you don't need to log the company name
   }
 
   getUserRole(): string {
-    return this.userRole;
+    return this.userRoleSubject.getValue();
   }
 
   getCompanyName(): string {
-    return this.companyName;
+    return this.companyNameSubject.getValue();
   }
+
+  // getLoggedInCompanyId(): string {
+  //   const loggedInUser = this.userDataService.getLoggedInUser();
+  //   return loggedInUser ? loggedInUser.companyId : '2';
+  // }
 }

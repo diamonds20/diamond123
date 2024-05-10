@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { CardBodyComponent, CardGroupComponent, CardHeaderComponent, CardComponent, } from '@coreui/angular';
@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 
 import { RowComponent, ColComponent } from '@coreui/angular';
 import { UserService } from 'src/utils/user.service';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { IconDirective } from '@coreui/icons-angular';
@@ -61,15 +62,29 @@ function isOverflown(element: HTMLElement) {
     DefaultFooterComponent
   ]
 })
-export class DefaultLayoutComponent {
+export class DefaultLayoutComponent implements OnInit, OnDestroy {
   isCompany: boolean = false;
   public navItems = navItems;
+  userRole: string = '';
+  companyName: string = '';
+  private subscriptions: Subscription[] = [];
 
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() {
-    this.isCompany = true;
-    this.isCompany = this.userService.getUserRole() === 'company';
+    this.subscriptions.push(
+      this.userService.userRole$.subscribe(role => {
+        this.userRole = role;
+        this.isCompany = role === 'company';
+      }),
+      this.userService.companyName$.subscribe(name => {
+        this.companyName = name;
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   navigateToOperatorsGrid() {

@@ -1,23 +1,61 @@
-<div>
-  <c-container>
-    <c-row [xs]="1" [sm]="2" [md]="4">
-      <c-col *ngFor="let operator of operators">
-        <c-card>
-          <c-card-header>
-            <strong>{{ operator.operatorName }}</strong>
-          </c-card-header>
-          <c-card-body>
-            <p><strong>Username:</strong> {{ operator.credentials.username }}</p>
-            <p><strong>Phone:</strong> {{ operator.contactInfo.phone }}</p>
-            <p><strong>Role 1:</strong> {{ operator.roles.role1?.join(', ') }}</p>
-            <p><strong>Role 2:</strong> {{ operator.roles.role2?.join(', ') }}</p>
-            <p><strong>Role 3:</strong> {{ operator.roles.role3?.join(', ') }}</p>
-          </c-card-body>
-        </c-card>
-      </c-col>
-    </c-row>
-  </c-container>
-</div>
-<div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
-  hello
+<div class="container">
+  <!-- Header row -->
+  <div class="row">
+    <div class="col">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>Operators</h3>
+        <button class="btn btn-primary btn-sm">Add New Operator</button>
+      </div>
+      <div class="mb-3" *ngIf="loggedInCompanyId">
+        <span class="fw-bold">Company ID:</span> {{ loggedInCompanyId }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Username</th>
+          <th>Roles</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let operator of operators" [ngSwitch]="!!operator">
+          <ng-container *ngSwitchCase="true">
+            <td>{{ operator?.operatorName || 'N/A' }}</td>
+            <td>{{ operator?.contactInfo?.phone || 'N/A' }}</td>
+            <td>{{ operator?.credentials?.username || 'N/A' }}</td>
+            <td>
+              <span *ngFor="let role of roles; let i = index">
+                <label>
+                  <input type="checkbox" [checked]="operator?.roles[role]" [disabled]="true" />
+                  {{ role }}
+                </label>
+                <span *ngIf="i !== operator?.roles.length - 1">, </span>
+              </span>
+            <td>
+              <a href="#" class="me-2 text-primary">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <span class="vr"></span>
+              <a href="#" class="ms-2 text-danger">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <td colspan="6">
+              <p>Loading...</p>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
 </div>

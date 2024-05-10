@@ -11,6 +11,7 @@ import { ContainerComponent, RowComponent, ColComponent, CardGroupComponent, Tex
 import { setToken } from 'src/utils/utils';
 import { UserService } from 'src/utils/user.service';
 import { CONSTANT } from 'src/constants/constants';
+import { CompanyService } from 'src/utils/company.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent {
     private http: HttpClient,
     private router: Router,
     private userService: UserService,
+    private companyService: CompanyService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
@@ -46,6 +48,8 @@ export class LoginComponent {
     this.userService.setUserRole(userRole);
     
     if (userRole === CONSTANT.COMPANY) {
+      const companyId = response.companyId; // Assuming the company ID is in the response
+      this.companyService.setCompanyId(companyId);
       const companyName = response.name; 
       this.userService.setCompanyName(companyName); // For company users
     } else {
