@@ -2,17 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, JsonPipe } from '@angular/common';
-import { ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, FormControlDirective, ButtonDirective } from '@coreui/angular';
-import { TableModule, FormModule, GridModule, CardHeaderComponent } from '@coreui/angular';
 import { NgStyle } from '@angular/common';
-import { IconDirective, IconModule, IconSetService } from '@coreui/icons-angular';
 import { Subject, takeUntil } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { CompanyService } from 'src/utils/company.service';
-
-interface CompanyIdResponse {
-  id: string;
-}
 
 interface Role {
   type: string;
@@ -34,24 +27,19 @@ export interface Operator {
   templateUrl: './operators-grid.component.html',
   styleUrls: ['./operators-grid.component.scss'],
   standalone: true,
-  imports: [HttpClientModule, CommonModule, IconModule, TableModule, CardHeaderComponent, IconDirective, FormModule, GridModule, JsonPipe, ContainerComponent, RowComponent, ColComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
+  imports: [HttpClientModule, CommonModule, JsonPipe, NgStyle],
 })
 
 export class OperatorsGridComponent implements OnInit, OnDestroy {
   operators: any[] = [];
-  iconSetService: IconSetService;
   loggedInCompanyId?: string;
   companyId?: string = '';
   private companyIdSubscription: Subscription | null = null;
   private unsubscribe$ = new Subject<void>();
-  
-  
-
   roles = ['Role 1', 'Role 2', 'Role 3'];
   roleKeys = ['role1', 'role2', 'role3'];
 
-  constructor(private http: HttpClient, iconSetService: IconSetService, private router: Router, private companyService: CompanyService) {
-    this.iconSetService = iconSetService;
+  constructor(private http: HttpClient, private router: Router, private companyService: CompanyService) {
     // this.companyId = '3';
   }
 
@@ -59,7 +47,13 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
     this.companyIdSubscription = this.companyService.companyId$.subscribe(
       (companyId: string) => {
         this.loggedInCompanyId = companyId;
-        this.fetchOperatorsData(companyId);
+
+        const storedOperatorsData = localStorage.getItem('operatorsData');
+        if (storedOperatorsData) {
+          this.operators = JSON.parse(storedOperatorsData);
+        } else {
+          this.fetchOperatorsData(companyId);
+        }
       }
     );
   }
@@ -70,12 +64,13 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
     if (this.companyIdSubscription) {
       this.companyIdSubscription.unsubscribe();
     }
+    localStorage.removeItem('operatorsData');
   }
 
   fetchOperatorsData(companyId: string) {
     const apiUrl = `http://localhost:5000/api/operators/${companyId}`;
     console.log(`Making API call to ${apiUrl}`);
-  
+
     this.http
       .get<Operator[]>(apiUrl)
       .pipe(takeUntil(this.unsubscribe$))
@@ -95,6 +90,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
               }
             }));
           console.log('Mapped operators:', mappedOperators);
+          localStorage.setItem('operatorsData', JSON.stringify(mappedOperators));
           this.operators = mappedOperators;
         },
         (error) => {
@@ -102,7 +98,6 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
         }
       );
   }
-
 
   getOperatorRoles(operator: Operator): string {
     const operatorRoles: string[] = [];

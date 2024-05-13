@@ -4,6 +4,7 @@ import { NgScrollbar } from 'ngx-scrollbar';
 import { CardBodyComponent, CardGroupComponent, CardHeaderComponent, CardComponent, } from '@coreui/angular';
 //import { OperatorButtonComponent } from 'src/app/views/pages/operator-button/operator-button.component';
 import { CommonModule } from '@angular/common';
+import { DocsExampleComponent } from '@docs-components/public-api';
 
 import { RowComponent, ColComponent } from '@coreui/angular';
 import { UserService } from 'src/utils/user.service';
@@ -39,6 +40,7 @@ function isOverflown(element: HTMLElement) {
   styleUrls: ['./default-layout.component.scss'],
   standalone: true,
   imports: [
+    DocsExampleComponent,
     RowComponent,
     ColComponent,
     CardBodyComponent,
@@ -72,25 +74,38 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.userService.userRole$.subscribe(role => {
-        this.userRole = role;
-        this.isCompany = role === 'company';
-      }),
-      this.userService.companyName$.subscribe(name => {
-        this.companyName = name;
-      })
-    );
+    const storedButtonState = localStorage.getItem('showOperatorsGridButton');
+    if (storedButtonState) {
+      this.isCompany = JSON.parse(storedButtonState);
+    } else {
+      this.subscriptions.push(
+        this.userService.userRole$.subscribe(role => {
+          this.userRole = role;
+          this.isCompany = role === 'company';
+          this.setButtonStateInLocalStorage(this.isCompany);
+        }),
+        this.userService.companyName$.subscribe(name => {
+          this.companyName = name;
+        })
+      );
+    }
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    localStorage.removeItem('showOperatorsGridButton');
   }
 
   navigateToOperatorsGrid() {
+  if (this.isCompany) {
     this.router.navigateByUrl('/operators-grid');
   }
+}
 
+  private setButtonStateInLocalStorage(state: boolean) {
+  localStorage.setItem('showOperatorsGridButton', JSON.stringify(state));
+  }
+  
   onScrollbarUpdate($event: any) {
     // if ($event.verticalUsed) {
     // console.log('verticalUsed', $event.verticalUsed);

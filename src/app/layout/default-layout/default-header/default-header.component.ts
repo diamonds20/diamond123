@@ -1,4 +1,4 @@
-import { Component, Input, DestroyRef, inject } from '@angular/core';
+import { Component, Input, DestroyRef, inject, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../../../utils/user.service';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
 import {
@@ -29,18 +29,17 @@ import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { IconDirective } from '@coreui/icons-angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay, filter, map, tap } from 'rxjs/operators';
+import { DocsExampleComponent } from '@docs-components/public-api';
 
 @Component({
   selector: 'app-default-header',
   templateUrl: './default-header.component.html',
   standalone: true,
-  imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, ThemeDirective, DropdownComponent, DropdownToggleDirective, TextColorDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective, ProgressBarDirective, ProgressComponent, NgStyle]
+  imports: [ContainerComponent, DocsExampleComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, ThemeDirective, DropdownComponent, DropdownToggleDirective, TextColorDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective, ProgressBarDirective, ProgressComponent, NgStyle]
 })
 export class DefaultHeaderComponent extends HeaderComponent {
   welcomeMessage: string = '';
   
-
-
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
@@ -68,9 +67,18 @@ export class DefaultHeaderComponent extends HeaderComponent {
 
   ngOnInit() {
       this.ngZone.run(() => {
+        const storedWelcomeMessage = localStorage.getItem('welcomeMessage');
+      if (storedWelcomeMessage) {
+        this.welcomeMessage = storedWelcomeMessage;
+      } else {
         this.setWelcomeMessage();
+      }
         this.changeDetectorRef.markForCheck();
       });
+  }
+
+  ngOnDestroy() {
+    localStorage.removeItem('welcomeMessage');
   }
 
 
@@ -85,11 +93,15 @@ export class DefaultHeaderComponent extends HeaderComponent {
           this.welcomeMessage = `Welcome, ${companyName}!`;
           break;
         case 'operator':
-          this.welcomeMessage = 'Welcome, Operator';
+          this.welcomeMessage = 'Welcome, Operator!';
           break;
         default:
           this.welcomeMessage = 'Welcome!';
       }
+      this.saveWelcomeMessageToLocalStorage(this.welcomeMessage);
+    }
+    private saveWelcomeMessageToLocalStorage(message: string) {
+      localStorage.setItem('welcomeMessage', message);
     }
 
 }
