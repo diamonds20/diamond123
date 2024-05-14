@@ -4,7 +4,7 @@
     <div class="col">
       <div class="d-flex justify-content-between align-items-center">
         <h3>Operators</h3>
-        <button class="btn btn-primary btn-sm">Add New Operator</button>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addOperatorModal">Add Operator</button>
       </div>
       <div class="mb-2" *ngIf="loggedInCompanyId">
         <span class="fw-bold">Company ID:</span> {{ loggedInCompanyId }}
@@ -57,5 +57,58 @@
       </tbody>
     </table>
   </div>
-  
+
+  <!-- Add Operator Modal -->
+<div class="modal fade" id="addOperatorModal" tabindex="-1" aria-labelledby="addOperatorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addOperatorModalLabel">Add Operator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form #newOperatorForm="ngForm">
+          <!-- Add your form fields for the new operator here -->
+          <div class="mb-3">
+            <label for="operatorName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="operatorName" placeholder="Enter operator name" name="operatorName" ngModel>
+          </div>
+          <div class="mb-3">
+            <label for="operatorPhone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="operatorPhone" placeholder="Enter operator phone" name="operatorPhone" ngModel>
+          </div>
+          <div class="mb-3">
+            <label for="operatorUsername" class="form-label">Username</label>
+            <input type="text" class="form-control" id="operatorUsername" placeholder="Enter operator username" name="operatorUsername" ngModel>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" id="role1" name="role" value="role1" ngModel>
+              <label class="form-check-label" for="role1">
+                Role 1
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" id="role2" name="role" value="role2" ngModel>
+              <label class="form-check-label" for="role2">
+                Role 2
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" id="role3" name="role" value="role3" ngModel>
+              <label class="form-check-label" for="role3">
+                Role 3
+              </label>
+            </div>
+          </div>
+          <!-- Add more form fields as needed -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="addNewOperator()" data-bs-dismiss="modal">Add Operator</button>
+      </div>
+    </div>
+  </div>
 </div>

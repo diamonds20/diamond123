@@ -1,43 +1,34 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgStyle } from '@angular/common';
+import { NgForm } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { CompanyService } from 'src/utils/company.service';
-
-interface Role {
-  type: string;
-}
-
-export interface Operator {
-  name: string;
-  username: string;
-  phone: string;
-  roles: Role[];
-  companyId: string;
-  role1: boolean;
-  role2: boolean;
-  role3: boolean;
-}
+import { CONSTANT } from 'src/constants/constants';
+import { mapOperatorData, getOperatorRoles } from 'src/utils/operators.service';
+import { Role, Operator } from 'src/utils/models';
 
 @Component({
   selector: 'app-operators-grid.component',
   templateUrl: './operators-grid.component.html',
   styleUrls: ['./operators-grid.component.scss'],
   standalone: true,
-  imports: [HttpClientModule, CommonModule, JsonPipe, NgStyle],
+  imports: [HttpClientModule, CommonModule, JsonPipe, NgStyle, FormsModule],
 })
 
 export class OperatorsGridComponent implements OnInit, OnDestroy {
+  @ViewChild('newOperatorForm') newOperatorForm!: NgForm;
   operators: any[] = [];
-  loggedInCompanyId?: string;
-  companyId?: string = '';
+  loggedInCompanyId!: string;
+  //companyId?: string = '';
   private companyIdSubscription: Subscription | null = null;
   private unsubscribe$ = new Subject<void>();
-  roles = ['Role 1', 'Role 2', 'Role 3'];
-  roleKeys = ['role1', 'role2', 'role3'];
+  roles = CONSTANT.ROLES;
+  roleKeys = CONSTANT.ROLES_KEY;
 
   constructor(private http: HttpClient, private router: Router, private companyService: CompanyService) {
     // this.companyId = '3';
@@ -48,7 +39,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       (companyId: string) => {
         this.loggedInCompanyId = companyId;
 
-        const storedOperatorsData = localStorage.getItem('operatorsData');
+        const storedOperatorsData = localStorage.getItem(CONSTANT.OPERATORS_DATA_KEY);
         if (storedOperatorsData) {
           this.operators = JSON.parse(storedOperatorsData);
         } else {
@@ -64,11 +55,11 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
     if (this.companyIdSubscription) {
       this.companyIdSubscription.unsubscribe();
     }
-    localStorage.removeItem('operatorsData');
+    localStorage.removeItem(CONSTANT.OPERATORS_DATA_KEY);
   }
 
   fetchOperatorsData(companyId: string) {
-    const apiUrl = `http://localhost:5000/api/operators/${companyId}`;
+    const apiUrl = `${CONSTANT.API_OPERATOR_URL}/${companyId}`;
     console.log(`Making API call to ${apiUrl}`);
 
     this.http
@@ -77,43 +68,40 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       .subscribe(
         (response) => {
           console.log('API response:', response);
-          const mappedOperators = response
-            .filter(operator => operator.companyId === companyId)
-            .map(operator => ({
-              operatorName: operator.name,
-              credentials: { username: operator.username },
-              contactInfo: { phone: operator.phone },
-              roles: {
-                'Role 1': operator.role1 || false,
-                'Role 2': operator.role2 || false,
-                'Role 3': operator.role3 || false,
-              }
-            }));
+          const mappedOperators = mapOperatorData(response, companyId);
           console.log('Mapped operators:', mappedOperators);
-          localStorage.setItem('operatorsData', JSON.stringify(mappedOperators));
+          localStorage.setItem(CONSTANT.OPERATORS_DATA_KEY, JSON.stringify(mappedOperators));
           this.operators = mappedOperators;
         },
         (error) => {
-          console.error('Error fetching operator data:', error);
+          console.error(CONSTANT.ERROR_FETCHING_OPERATORS, error);
         }
       );
   }
 
   getOperatorRoles(operator: Operator): string {
-    const operatorRoles: string[] = [];
+    return getOperatorRoles(operator);
+  }
 
-    if (operator.role1) {
-      operatorRoles.push(this.roles[0]);
-    }
-
-    if (operator.role2) {
-      operatorRoles.push(this.roles[1]);
-    }
-
-    if (operator.role3) {
-      operatorRoles.push(this.roles[2]);
-    }
-
-    return operatorRoles.join(', ');
+  addNewOperator() {
+    const newOperator = this.newOperatorForm.value;
+    const selectedRole = newOperator.role;
+   
+    const apiUrl = `${CONSTANT.API_OPERATOR_URL}/${this.loggedInCompanyId}`;
+    this.http
+      .post<Operator>(apiUrl, newOperator)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(
+        (response) => {
+          console.log('New operator added:', response);
+          const mappedOperator = mapOperatorData([response], this.loggedInCompanyId)[0];
+          this.operators.push(mappedOperator);
+          localStorage.setItem(CONSTANT.OPERATORS_DATA_KEY, JSON.stringify(this.operators));
+          this.newOperatorForm.reset();
+        },
+        (error) => {
+          console.error('Error adding new operator:', error);
+        }
+      );
   }
 }

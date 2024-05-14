@@ -13,5 +13,14 @@ export const CONSTANT = {
     ERROR_LOGIN: 'Login error:',
     SUPERADMIN: 'superadmin',
     COMPANY: 'company',
-    OPERATOR: 'operator'
+    OPERATOR: 'operator',
+    ROLES: ['Role 1', 'Role 2', 'Role 3'],
+    ROLE_KEYS: ['role1', 'role2', 'role3'],
+    OPERATORS_DATA_KEY: 'operatorsData',
+    OPERATOR_NAME_KEY: 'operatorName',
+    PHONE_KEY: 'phone',
+    ROLES_KEY: 'roles',
+    ERROR_FETCHING_OPERATORS: 'Error fetching operator data:',
+    CREDENTIALS_KEY: 'credentials',
+    API_OPERATOR_URL: 'http://localhost:5000/api/operators',
  }
