@@ -33,4 +33,30 @@
     opacity: 0.25;
     margin: 0 0.5rem;
   }
+
+  .delete-icon {
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+  
+    &:hover {
+      color: darkred;
+  
+      i {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  .edit-icon {
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+  
+    &:hover {
+      color: darkred;
+  
+      i {
+        transform: scale(1.2);
+      }
+    }
+  }
   

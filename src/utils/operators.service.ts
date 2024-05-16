@@ -6,6 +6,7 @@ export const mapOperatorData = (operators: Operator[], companyId: string) =>
     operators
         .filter(operator => operator.companyId === companyId)
         .map(operator => ({
+            operatorId: operator._id,
             operatorName: operator.name,
             credentials: { username: operator.username },
             contactInfo: { phone: operator.phone },

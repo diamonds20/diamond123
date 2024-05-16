@@ -4,18 +4,25 @@ export interface Role {
   checked: boolean;
 }
 
+export class Role {
+  constructor(public name: string) {}
+}
+
 export interface Credentials {
   username: string;
   // Add any other properties related to credentials
 }
 
 export interface Operator {
+  _id: string;
   name: string;
   //credentials: Credentials; // Add the credentials property
   //contactInfo: { phone: string };
   companyId: string
-  ///operatorName: string;
+  operatorName: string;
+  operatorId: string;
   username: string; // Add this line
+  password: string;
   phone: string;
   roles: Role[];
   role1: Role | null;
