@@ -6,6 +6,7 @@ export interface Role {
 
 export class Role {
   constructor(public name: string) {}
+  
 }
 
 export interface Credentials {
@@ -16,8 +17,8 @@ export interface Credentials {
 export interface Operator {
   _id: string;
   name: string;
-  //credentials: Credentials; // Add the credentials property
-  //contactInfo: { phone: string };
+  credentials: { username: string }; // Add the credentials property
+  contactInfo: { phone: string };
   companyId: string
   operatorName: string;
   operatorId: string;

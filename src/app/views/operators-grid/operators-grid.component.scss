@@ -1,62 +1,159 @@
 .operator-info {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
+  
+}
+
+.operator-field {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+
+  strong {
+    margin-right: 0.5rem;
   }
-  
-  .operator-field {
-    display: flex;
-    align-items: center;
-    margin-right: 1rem;
-    margin-bottom: 0.5rem;
-  
-    strong {
+}
+
+.role-label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.5rem;
+
+  input[type="checkbox"] {
+    margin-right: 0.25rem;
+  }
+}
+
+.vr {
+  display: inline-block;
+  align-self: stretch;
+  width: 1px;
+  min-height: 1em;
+  background-color: currentColor;
+  opacity: 0.25;
+  margin: 0 0.5rem;
+}
+
+.delete-icon {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: darkred;
+
+    i {
+      transform: scale(1.2);
+    }
+  }
+}
+
+.edit-icon {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: darkred;
+
+    i {
+      transform: scale(1.2);
+    }
+  }
+}
+
+.custom-modal-content {
+  background-color: #2c2e33;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.custom-modal-header {
+  background-color: #4f5b62;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.custom-modal-body {
+  padding: 20px;
+}
+
+.custom-modal-footer {
+  background-color: #4f5b62;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.modal-dialog-centered {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+// Table styles
+::ng-deep table {
+  // Add some spacing around the table
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  thead th {
+    // Styles for table header cells
+    padding: 0.75rem;
+  }
+
+  tbody td {
+    // Styles for table body cells
+    padding: 0.75rem;
+    vertical-align: middle;
+
+    .edit-icon,
+    .delete-icon {
+      // Styles for edit and delete icons
+      cursor: pointer;
+    }
+
+    .edit-icon {
+      // Styles for edit icon
       margin-right: 0.5rem;
     }
-  }
-  
-  .role-label {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 0.5rem;
-  
-    input[type="checkbox"] {
-      margin-right: 0.25rem;
+
+    .delete-icon {
+      // Styles for delete icon
+      margin-left: 0.5rem;
     }
   }
+}
 
-  .vr {
-    display: inline-block;
-    align-self: stretch;
-    width: 1px;
-    min-height: 1em;
-    background-color: currentColor;
-    opacity: 0.25;
-    margin: 0 0.5rem;
-  }
+// Add spacing between label and input
+.mb-3 {
+  display: flex;
+  flex-direction: column;
 
-  .delete-icon {
-    cursor: pointer;
-    transition: color 0.2s ease-in-out;
-  
-    &:hover {
-      color: darkred;
-  
-      i {
-        transform: scale(1.2);
-      }
-    }
+  label {
+    margin-bottom: 0.5rem; // Adjust the value as needed
   }
+}
 
-  .edit-icon {
-    cursor: pointer;
-    transition: color 0.2s ease-in-out;
-  
-    &:hover {
-      color: darkred;
-  
-      i {
-        transform: scale(1.2);
-      }
-    }
-  }
-  
+// Add spacing between radio buttons
+.mb-3 .form-radio {
+  margin-bottom: 0.5rem; // Adjust the value as needed
+}
+
+// Button styles
+button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  color: #fff;
+  background-color: #6880cc;
+}
