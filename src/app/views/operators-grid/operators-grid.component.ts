@@ -20,7 +20,6 @@ import { TableModule, UtilitiesModule } from '@coreui/angular';
 import { InputGroupComponent } from '@coreui/angular';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { saveAs } from 'file-saver';
 import { initAutoTable } from 'src/utils/autoTable';
 
 
@@ -151,19 +150,19 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
   async generatePDF() {
     const doc = new jsPDF();
   
-    // Dynamically import and initialize autoTable
+    // dynamically importing & initializing autoTable
     const autoTable = await initAutoTable();
   
-    // Convert JSON data to a table format without the sectionId and highlightRed columns
+    // converting JSON Data to a table format
     const tableData = this.jsonData.flatMap((section) => {
       const sectionRow = [
         section.sectionTitle || '',
         section.sectionScore.toString() || '',
-        '', '', // Empty cells for milestone headers
+        '', '',
       ];
   
       const milestoneRows = section.milestoneList.map((milestone) => [
-        '', '', // Empty cells for section details
+        '', '', 
         milestone.milestoneTitle || '',
         milestone.milestoneScore?.toString() || '',
       ]);
@@ -171,7 +170,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       return [sectionRow, ...milestoneRows];
     });
   
-    // Add table to the PDF using autoTable
+    // table in the PDF using autoTable
     autoTable(doc, {
       head: [
         [
@@ -187,13 +186,13 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       body: tableData,
       startY: 20,
       styles: {
-        lineWidth: 0.1, // Adjust as needed
-        lineColor: [200, 200, 200], // Grey color
-        cellPadding: 2, // Adjust padding if needed
-        halign: 'center', // Center-align content horizontally
+        lineWidth: 0.1,
+        lineColor: [200, 200, 200],
+        cellPadding: 2, 
+        halign: 'center', 
       },
       didParseCell: (data) => {
-        // Change font color if highlightRed is true for sectionScore
+        // change font color if highlightRed is true for sectionScore logic
         if (data.section === 'body' && data.column.index === 1) {
           const rowIndex = data.row.index;
           let sectionIndex = 0;
@@ -208,12 +207,12 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
           }
           const section = this.jsonData[sectionIndex];
           if (section.highlightRed) {
-            data.cell.styles.textColor = [255, 0, 0]; // Red color
+            data.cell.styles.textColor = [255, 0, 0]; 
           }
         }
       },
       didDrawCell: (data) => {
-        // Draw borders
+        // borders
         doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
       },
     });
