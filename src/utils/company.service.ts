@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CompanyService {
-  private _companyId = new BehaviorSubject<string>(''); // Initialize with an empty string
+  private _companyId = new BehaviorSubject<string>('');
   public companyId$ = this._companyId.asObservable();
 
   setCompanyId(companyId: string) {

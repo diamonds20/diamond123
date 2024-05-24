@@ -40,6 +40,8 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.2",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "lodash-es": "^4.17.21",
     "ngx-scrollbar": "^14.1.0",
     "ngx-toastr": "^18.0.0",

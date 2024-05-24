@@ -23,4 +23,5 @@ export const CONSTANT = {
     ERROR_FETCHING_OPERATORS: 'Error fetching operator data:',
     CREDENTIALS_KEY: 'credentials',
     API_OPERATOR_URL: 'http://localhost:5000/api/operators',
+    ITEMS_PER_PAGE: 5
  }

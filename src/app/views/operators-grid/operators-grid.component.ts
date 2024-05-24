@@ -14,19 +14,44 @@ import { mapOperatorData, getOperatorRoles } from 'src/utils/operators.service';
 import { Role, Operator } from 'src/utils/models';
 import { ModalModule } from '@coreui/angular';
 import { RowComponent, ColComponent } from '@coreui/angular';
+import { RouterLink } from '@angular/router';
+import { PageItemDirective, PageLinkDirective, PaginationComponent } from '@coreui/angular';
+import { TableModule, UtilitiesModule } from '@coreui/angular';
+import { InputGroupComponent } from '@coreui/angular';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { saveAs } from 'file-saver';
+import { initAutoTable } from 'src/utils/autoTable';
+
+
+
+interface MilestoneData {
+  milestoneTitle?: string;
+  milestoneScore?: number;
+}
+
+interface SectionData {
+  sectionId: string;
+  sectionTitle: string;
+  sectionScore: number;
+  highlightRed?: boolean;
+  milestoneList: MilestoneData[];
+}
 
 @Component({
   selector: 'app-operators-grid.component',
   templateUrl: './operators-grid.component.html',
   styleUrls: ['./operators-grid.component.scss'],
   standalone: true,
-  imports: [HttpClientModule, CommonModule, JsonPipe, NgStyle, FormsModule, ModalModule, RowComponent, ColComponent, ReactiveFormsModule],
+  imports: [HttpClientModule, InputGroupComponent, CommonModule, JsonPipe, NgStyle, FormsModule, ModalModule, RowComponent, ColComponent, ReactiveFormsModule, RouterLink, PageItemDirective, PageLinkDirective, PaginationComponent, TableModule, UtilitiesModule],
 })
 
 export class OperatorsGridComponent implements OnInit, OnDestroy {
-   @ViewChild('newOperatorForm') newOperatorForm!: NgForm;
+  @ViewChild('newOperatorForm') newOperatorForm!: NgForm;
   @ViewChild('editOperatorForm') editOperatorForm!: NgForm;
   operators: any[] = [];
+  filteredOperators: any[] = [];
+  searchTerm: string = '';
   loggedInCompanyId!: string;
   //companyId?: string = '';
   private companyIdSubscription: Subscription | null = null;
@@ -41,6 +66,45 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
   //newOperatorForm: FormGroup;
   operatorToDelete: Operator | null = null;
   showNoOperatorsModal = false;
+  currentPage: number = 1;
+  itemsPerPage: number = 3;
+  totalItems: number = 0;
+  totalPages: number = 3;
+  activePage: number = 1;
+
+  jsonData: SectionData[] = [
+    {
+      sectionId: '95c11888-696c-4c2e-8e0e-c30aefa971e8',
+      sectionTitle: 'Development Milestones',
+      sectionScore: 11,
+      highlightRed: true,
+      milestoneList: [
+        {
+          milestoneTitle: 'Social/Emotional Milestones',
+          milestoneScore: 3,
+        },
+        {
+          milestoneTitle: 'Language / Communication Milestones',
+          milestoneScore: 3,
+        },
+        {
+          milestoneTitle: 'Movement / Physical Development Milestones',
+          milestoneScore: 5,
+        },
+      ],
+    },
+    {
+      sectionId: 'f18f0099-5105-44fc-ab4b-b8121b77ec1f',
+      sectionTitle: 'Edinburgh Postnatal Depression Scale (EPDS)',
+      sectionScore: 30,
+      milestoneList: [
+        {
+          milestoneScore: 30,
+        },
+      ],
+    },
+  ];
+
 
   constructor(private http: HttpClient, private router: Router, private companyService: CompanyService, private formBuilder: FormBuilder) {
     // this.companyId = '3';
@@ -52,21 +116,26 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
     //   password: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]],
     //   role: ['', Validators.required]
     // });
+    this.itemsPerPage = this.getItemsPerPageFromStorage();
   }
 
-  ngOnInit() {
-    this.companyIdSubscription = this.companyService.companyId$.subscribe(
-      (companyId: string) => {
-        this.loggedInCompanyId = companyId;
 
-        const storedOperatorsData = localStorage.getItem(CONSTANT.OPERATORS_DATA_KEY);
-        if (storedOperatorsData) {
-          this.operators = JSON.parse(storedOperatorsData);
-        } else {
+  ngOnInit() {
+    const loggedInCompanyId = sessionStorage.getItem('loggedInCompanyId');
+    if (loggedInCompanyId) {
+      this.loggedInCompanyId = loggedInCompanyId;
+      console.log('Company ID after browser refresh:', this.loggedInCompanyId);
+      this.fetchOperatorsData(this.loggedInCompanyId);
+    } else {
+      this.companyIdSubscription = this.companyService.companyId$.subscribe(
+        (companyId: string) => {
+          this.loggedInCompanyId = companyId;
+          sessionStorage.setItem('loggedInCompanyId', companyId);
           this.fetchOperatorsData(companyId);
         }
-      }
-    );
+      );
+    }
+    this.filterOperators();
   }
 
   ngOnDestroy() {
@@ -76,7 +145,144 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       this.companyIdSubscription.unsubscribe();
     }
     localStorage.removeItem(CONSTANT.OPERATORS_DATA_KEY);
+    sessionStorage.removeItem('loggedInCompanyId');
   }
+
+  async generatePDF() {
+    const doc = new jsPDF();
+  
+    // Dynamically import and initialize autoTable
+    const autoTable = await initAutoTable();
+  
+    // Convert JSON data to a table format without the sectionId and highlightRed columns
+    const tableData = this.jsonData.flatMap((section) => {
+      const sectionRow = [
+        section.sectionTitle || '',
+        section.sectionScore.toString() || '',
+        '', '', // Empty cells for milestone headers
+      ];
+  
+      const milestoneRows = section.milestoneList.map((milestone) => [
+        '', '', // Empty cells for section details
+        milestone.milestoneTitle || '',
+        milestone.milestoneScore?.toString() || '',
+      ]);
+  
+      return [sectionRow, ...milestoneRows];
+    });
+  
+    // Add table to the PDF using autoTable
+    autoTable(doc, {
+      head: [
+        [
+          { content: 'Section Title', rowSpan: 2 },
+          { content: 'Section Score', rowSpan: 2 },
+          { content: 'Milestone List', colSpan: 2 },
+        ],
+        [
+          { content: 'Milestone Title' },
+          { content: 'Milestone Score' },
+        ],
+      ],
+      body: tableData,
+      startY: 20,
+      styles: {
+        lineWidth: 0.1, // Adjust as needed
+        lineColor: [200, 200, 200], // Grey color
+        cellPadding: 2, // Adjust padding if needed
+        halign: 'center', // Center-align content horizontally
+      },
+      didParseCell: (data) => {
+        // Change font color if highlightRed is true for sectionScore
+        if (data.section === 'body' && data.column.index === 1) {
+          const rowIndex = data.row.index;
+          let sectionIndex = 0;
+          let cumulativeRowCount = 0;
+          for (let i = 0; i < this.jsonData.length; i++) {
+            const milestoneCount = this.jsonData[i].milestoneList.length;
+            cumulativeRowCount += 1 + milestoneCount;
+            if (rowIndex < cumulativeRowCount) {
+              sectionIndex = i;
+              break;
+            }
+          }
+          const section = this.jsonData[sectionIndex];
+          if (section.highlightRed) {
+            data.cell.styles.textColor = [255, 0, 0]; // Red color
+          }
+        }
+      },
+      didDrawCell: (data) => {
+        // Draw borders
+        doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+      },
+    });
+  
+    doc.setProperties({
+      title: 'Table PDF',
+      creator: 'Your Application',
+    });
+  
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, '_blank');
+  }
+  
+  
+
+  handlePageChange(page: number): void {
+    this.currentPage = page;
+    this.filterOperators();
+  }
+
+  generateArray(length: number): number[] {
+    return Array.from({ length }, (_, i) => i + 1);
+  }
+
+  handleItemsPerPageChange(itemsPerPage: number): void {
+    this.itemsPerPage = itemsPerPage;
+    sessionStorage.setItem('itemsPerPage', itemsPerPage.toString());
+    this.currentPage = 1;
+    this.filterOperators();
+  }
+
+  getTotalPages(): number {
+    return Math.ceil(this.totalItems / this.itemsPerPage);
+  }
+
+  getItemsPerPageFromStorage(): number {
+    const storedItemsPerPage = sessionStorage.getItem('itemsPerPage');
+    return storedItemsPerPage ? parseInt(storedItemsPerPage, 10) : 3;
+  }
+
+  getPageNumbers(): number[] {
+    const totalPages = this.getTotalPages();
+    const pageNumbers = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (this.operators.length >= (i - 1) * this.itemsPerPage) {
+        pageNumbers.push(i);
+      }
+    }
+
+    return pageNumbers;
+  }
+
+  filterOperators() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+  
+    const filteredBySearch = this.operators.filter((operator) =>
+      operator.operatorName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      operator.contactInfo.phone.includes(this.searchTerm) ||
+      operator.credentials.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  
+    this.filteredOperators = filteredBySearch.slice(startIndex, endIndex);
+  
+    this.totalItems = filteredBySearch.length;
+  }
+
 
   fetchOperatorsData(companyId: string) {
     const apiUrl = `${CONSTANT.API_OPERATOR_URL}/${companyId}`;
@@ -92,6 +298,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
           console.log('Mapped operators:', mappedOperators);
           localStorage.setItem(CONSTANT.OPERATORS_DATA_KEY, JSON.stringify(mappedOperators));
           this.operators = mappedOperators;
+          this.filterOperators();
           if (this.operators.length === 0) {
             this.showNoOperatorsModal = true;
           }
@@ -181,27 +388,27 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
 
   deleteOperator(operator: Operator) {
 
-      const apiUrl = `http://localhost:5000/api/operator/${operator.operatorId}`;
-      console.log(`Sending DELETE request to ${apiUrl}`);
+    const apiUrl = `http://localhost:5000/api/operator/${operator.operatorId}`;
+    console.log(`Sending DELETE request to ${apiUrl}`);
 
-      this.http
-        .delete(apiUrl)
-        // .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(
-          (response) => {
-            console.log('DELETE response:', response);
-            this.fetchOperatorsData(this.loggedInCompanyId);
-            // const updatedOperators = this.operators.filter(op => op.id !== operator._id);
-            // console.log('Updated operators list:', updatedOperators);
-            // this.operators = updatedOperators;
-            // localStorage.setItem(CONSTANT.OPERATORS_DATA_KEY, JSON.stringify(this.operators));
-            // console.log('Operators data saved to localStorage');
+    this.http
+      .delete(apiUrl)
+      // .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(
+        (response) => {
+          console.log('DELETE response:', response);
+          this.fetchOperatorsData(this.loggedInCompanyId);
+          // const updatedOperators = this.operators.filter(op => op.id !== operator._id);
+          // console.log('Updated operators list:', updatedOperators);
+          // this.operators = updatedOperators;
+          // localStorage.setItem(CONSTANT.OPERATORS_DATA_KEY, JSON.stringify(this.operators));
+          // console.log('Operators data saved to localStorage');
 
-          },
-          (error) => {
-            console.error('Error deleting operator:', error);
-          }
-        );
+        },
+        (error) => {
+          console.error('Error deleting operator:', error);
+        }
+      );
   }
 
   openEditOperatorModal(operator: Operator) {
@@ -222,13 +429,13 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  
+
 
   editOperator(operator: Operator) {
     console.log('editOperator method called');
     const formValue = this.editOperatorForm.value;
     console.log('Edit operator form value:', formValue);
-  
+
     const editedOperator = {
       name: formValue.operatorName,
       phone: formValue.contactInfo ? formValue.contactInfo.phone : operator.phone,
@@ -238,7 +445,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       role2: operator.role2,
       role3: operator.role3,
     };
-  
+
     if (formValue.role === 'role1') {
       editedOperator.role1 = true;
       editedOperator.role2 = false;
@@ -252,12 +459,12 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       editedOperator.role2 = false;
       editedOperator.role3 = true;
     }
-  
+
     const selectedRole = editedOperator.role;
     const apiUrl = `http://localhost:5000/api/operator/${operator.operatorId}`;
     console.log('Sending PUT request to:', apiUrl);
     console.log('Request body:', editedOperator);
-  
+
     this.http
       .put<Operator>(apiUrl, editedOperator)
       .pipe(takeUntil(this.unsubscribe$))

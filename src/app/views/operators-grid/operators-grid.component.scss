@@ -98,12 +98,14 @@
   thead th {
     // Styles for table header cells
     padding: 0.75rem;
+    padding-left: 60px;
   }
 
   tbody td {
     // Styles for table body cells
     padding: 0.75rem;
     vertical-align: middle;
+    padding-left: 40px;
 
     .edit-icon,
     .delete-icon {
@@ -156,4 +158,100 @@ button {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   color: #fff;
   background-color: #6880cc;
+}
+
+/* Responsive Table */
+@media (max-width: 767px) {
+  /* Styles for small screens (mobile devices) */
+  .table-responsive-data {
+    border: none;
+  }
+
+  .table-responsive-data thead {
+    display: none;
+  }
+
+  .table-responsive-data tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+  }
+
+  .table-responsive-data tbody td {
+    display: block;
+    text-align: right;
+    padding: 0.75rem;
+    padding-left: 70px;
+  }
+
+  .table-responsive-data tbody td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Styles for larger screens (tablets and desktops) */
+  .table-responsive-data thead {
+    display: table-header-group;
+  }
+
+  .table-responsive-data tbody tr {
+    display: table-row;
+  }
+
+  .table-responsive-data tbody td {
+    display: table-cell;
+    text-align: left;
+    padding: 0.75rem;
+    padding-left: 50px;
+  }
+
+  .table-responsive-data tbody td:before {
+    content: none;
+  }
+}
+
+.search-input {
+  width: 200px;
+}
+
+.pagination {
+  .page-item {
+    &.active {
+      .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.pagination-wrapper {
+  margin-bottom: -5px; 
+}
+
+.pagination-wrapper a {
+  cursor: pointer;
+}
+
+.items {
+  padding-right: 8px;
+}
+
+.items-per-page {
+  font-size: 13px;
+  
+
+  .items {
+    font-size: inherit;
+  }
+
+  select {
+    font-size: 12px;
+    padding: 2px 4px;
+  }
 }

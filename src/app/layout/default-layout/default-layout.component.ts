@@ -5,7 +5,6 @@ import { CardBodyComponent, CardGroupComponent, CardHeaderComponent, CardCompone
 //import { OperatorButtonComponent } from 'src/app/views/pages/operator-button/operator-button.component';
 import { CommonModule } from '@angular/common';
 import { DocsExampleComponent } from '@docs-components/public-api';
-
 import { RowComponent, ColComponent } from '@coreui/angular';
 import { UserService } from 'src/utils/user.service';
 import { Subscription } from 'rxjs';
