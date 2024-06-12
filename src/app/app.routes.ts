@@ -12,6 +12,9 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', loadChildren: () => import('./views/dashboard/routes').then((m) => m.routes) },
       { path: 'operators-grid', loadChildren: () => import('./views/operators-grid/routes').then((m) => m.routes) },
+      { path: 'inwards', loadChildren: () => import('./views/inwards/routes'). then ((m) => m.routes) },
+      { path: 'compare', loadChildren: () => import('./views/compare/routes'). then ((m) => m.routes) },
+      { path: 'outwards', loadChildren: () => import('./views/outwards/routes'). then ((m) => m.routes) },
       { path: 'theme', loadChildren: () => import('./views/theme/routes').then((m) => m.routes) },
       { path: 'base', loadChildren: () => import('./views/base/routes').then((m) => m.routes) },
       { path: 'buttons', loadChildren: () => import('./views/buttons/routes').then((m) => m.routes) },

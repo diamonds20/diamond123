@@ -12,6 +12,8 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,8 +29,9 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),
-    importProvidersFrom(SidebarModule, DropdownModule),
-    IconSetService,
-    provideAnimations()
+    // importProvidersFrom(SidebarModule, DropdownModule),
+    // IconSetService,
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideAnimations(),
   ]
 };

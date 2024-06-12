@@ -12,6 +12,7 @@ import { setToken } from 'src/utils/utils';
 import { UserService } from 'src/utils/user.service';
 import { CONSTANT } from 'src/constants/constants';
 import { CompanyService } from 'src/utils/company.service';
+import { getOperatorRoles } from 'src/utils/operators.service';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +35,7 @@ export class LoginComponent {
     private http: HttpClient,
     private router: Router,
     private userService: UserService,
-    private companyService: CompanyService
+    private companyService: CompanyService,
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
@@ -44,7 +45,6 @@ export class LoginComponent {
 
   handleSuccessfulLogin(message: string, userRole: string, navRoute: string, token: string, response: any) {
     this.successMessage = message;
-    this.userRole = userRole;
     this.userService.setUserRole(userRole);
     
     if (userRole === CONSTANT.COMPANY) {
@@ -55,10 +55,27 @@ export class LoginComponent {
     } else {
       this.userService.setCompanyName(''); // For non-company users
     }
-    
-    this.router.navigateByUrl(navRoute);
+
+    if (userRole === CONSTANT.OPERATOR) {
+      const operatorRoles = getOperatorRoles(response);
+      const operatorName = response.name;
+      
+      this.userService.setOperatorName(operatorName);
+      this.userService.setOperatorRole(operatorRoles);
+    }
+
+    // if (response.role1) {
+    //   navRoute = '/operator/inwards';
+    // } else if (response.role2) {
+    //   navRoute = '/operator/compare';
+    // } else if (response.role3) {
+    //   navRoute = '/operator/outwards';
+    // }
+  
+    this.router.navigate(['/dashboard']);
     setToken(token);
-  }
+    }
+  
 
   login() {
     if (this.loginForm.valid) {
@@ -70,15 +87,15 @@ export class LoginComponent {
           if (response.isSuperAdmin) {
             // SuperAdmin login
             console.log(CONSTANT.SUPER_ADMIN_LOGGED_IN, response);
-            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.SUPERADMIN, CONSTANT.DASHBOARD_ROUTE, response.token, response)
+            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.SUPERADMIN, 'SUPERADMIN', response.token, response)
           } else if (response.isCompany) {
             // Company login
             console.log(CONSTANT.COMPANY_LOGGED_IN, response);
-            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.COMPANY, CONSTANT.DASHBOARD_ROUTE, response.token, response)
+            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.COMPANY, 'COMPANY', response.token, response)
           } else if (response.isOperator) {
             // Operator login
             console.log(CONSTANT.OPERATOR_LOGGED_IN, response);
-            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.OPERATOR, CONSTANT.DASHBOARD_ROUTE, response.token, response)
+            this.handleSuccessfulLogin(CONSTANT.LOGIN_SUCCESSFUL, CONSTANT.OPERATOR, response.role, response.token, response)
           } else {
             this.error = CONSTANT.FAILURE_WHILE_LOGIN;
           }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { CardBodyComponent, CardGroupComponent, CardHeaderComponent, CardComponent, } from '@coreui/angular';
@@ -9,6 +9,7 @@ import { RowComponent, ColComponent } from '@coreui/angular';
 import { UserService } from 'src/utils/user.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { Operator } from 'src/utils/models';
 
 import { IconDirective } from '@coreui/icons-angular';
 import {
@@ -65,12 +66,17 @@ function isOverflown(element: HTMLElement) {
 })
 export class DefaultLayoutComponent implements OnInit, OnDestroy {
   isCompany: boolean = false;
+  isOperator: boolean = false;
   public navItems = navItems;
   userRole: string = '';
   companyName: string = '';
+  operatorRole: string = '';
   private subscriptions: Subscription[] = [];
+  showInwardsButton: boolean = false;
+  showCompareButton: boolean = false;
+  showOutwardsButton: boolean = false;
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     const storedButtonState = localStorage.getItem('showOperatorsGridButton');
@@ -80,31 +86,109 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.userService.userRole$.subscribe(role => {
           this.userRole = role;
+          this.isOperator = role === 'operator';
           this.isCompany = role === 'company';
           this.setButtonStateInLocalStorage(this.isCompany);
+
         }),
-        this.userService.companyName$.subscribe(name => {
-          this.companyName = name;
+      )
+      // Check if button states exist in session storage
+    const inwardsButtonState = sessionStorage.getItem('showInwardsButton');
+    const compareButtonState = sessionStorage.getItem('showCompareButton');
+    const outwardsButtonState = sessionStorage.getItem('showOutwardsButton');
+
+    if (inwardsButtonState && compareButtonState && outwardsButtonState) {
+      this.showInwardsButton = JSON.parse(inwardsButtonState);
+      this.showCompareButton = JSON.parse(compareButtonState);
+      this.showOutwardsButton = JSON.parse(outwardsButtonState);
+    } else {
+      // Subscribe to the operatorRole$ observable
+      this.subscriptions.push(
+        this.userService.operatorRole$.subscribe(role => {
+          this.operatorRole = role;
+          console.log('Operator Role:', role);
+          const roles = role.split(',');
+          this.showInwardsButton = roles.includes('Role 1');
+          this.showCompareButton = roles.includes('Role 2');
+          this.showOutwardsButton = roles.includes('Role 3');
+          this.setButtonStatesInSessionStorage();
+          this.cdr.detectChanges();
         })
       );
     }
+    }
+
+    //
+    this.subscriptions.push(
+      this.userService.operatorRole$.subscribe(role => {
+        this.operatorRole = role;
+        console.log('Operator Role:', role);
+        if (role === 'Role 1') {
+          console.log('User has Role 1 role');
+        } else if (role === 'Role 2') {
+          console.log('User has Role 2 role');
+        } else if (role === 'Role 3') {
+          console.log('User has Role 3 role');
+        } else if (role.includes('Role 1') && role.includes('Role 2')) {
+          console.log('User has Role 1 and Role 2 roles');
+        } else if (role.includes('Role 1') && role.includes('Role 3')) {
+          console.log('User has Role 1 and Role 3 roles');
+        } else if (role.includes('Role 2') && role.includes('Role 3')) {
+          console.log('User has Role 2 and Role 3 roles');
+        } else if (role.includes('Role 1') && role.includes('Role 2') && role.includes('Role 3')) {
+          console.log('User has Role 1, Role 2 and Role 3 roles');
+        } else {
+          console.log('User does not have Role 1, Role 2, or Role 3 role');
+        }
+        this.cdr.detectChanges();
+      })
+    );
   }
+
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     localStorage.removeItem('showOperatorsGridButton');
+    sessionStorage.removeItem('showInwardsButton');
+    sessionStorage.removeItem('showCompareButton');
+    sessionStorage.removeItem('showOutwardsButton');
   }
 
   navigateToOperatorsGrid() {
-  if (this.isCompany) {
-    this.router.navigateByUrl('/operators-grid');
+    if (this.isCompany) {
+      this.router.navigateByUrl('/operators-grid');
+    }
   }
-}
+
+  navigateToInwardsPage() {
+    if (this.isOperator) {
+      this.router.navigate(['/inwards']);
+    }
+  }
+
+  navigateToComparePage() {
+    if (this.isOperator) {
+      this.router.navigate(['/compare']);
+    }
+  }
+
+  navigateToOutwardsPage() {
+    if (this.isOperator) {
+      this.router.navigate(['/outwards']);
+    }
+  }
+
 
   private setButtonStateInLocalStorage(state: boolean) {
-  localStorage.setItem('showOperatorsGridButton', JSON.stringify(state));
+    localStorage.setItem('showOperatorsGridButton', JSON.stringify(state));
   }
-  
+
+  private setButtonStatesInSessionStorage() {
+    sessionStorage.setItem('showInwardsButton', JSON.stringify(this.showInwardsButton));
+    sessionStorage.setItem('showCompareButton', JSON.stringify(this.showCompareButton));
+    sessionStorage.setItem('showOutwardsButton', JSON.stringify(this.showOutwardsButton));
+  }
+
   onScrollbarUpdate($event: any) {
     // if ($event.verticalUsed) {
     // console.log('verticalUsed', $event.verticalUsed);

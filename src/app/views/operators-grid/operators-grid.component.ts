@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -42,7 +42,7 @@ interface SectionData {
   templateUrl: './operators-grid.component.html',
   styleUrls: ['./operators-grid.component.scss'],
   standalone: true,
-  imports: [HttpClientModule, InputGroupComponent, CommonModule, JsonPipe, NgStyle, FormsModule, ModalModule, RowComponent, ColComponent, ReactiveFormsModule, RouterLink, PageItemDirective, PageLinkDirective, PaginationComponent, TableModule, UtilitiesModule],
+  imports: [ InputGroupComponent, CommonModule, JsonPipe, NgStyle, FormsModule, ModalModule, RowComponent, ColComponent, ReactiveFormsModule, RouterLink, PageItemDirective, PageLinkDirective, PaginationComponent, TableModule, UtilitiesModule],
 })
 
 export class OperatorsGridComponent implements OnInit, OnDestroy {
@@ -120,7 +120,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    const loggedInCompanyId = sessionStorage.getItem('loggedInCompanyId');
+    const loggedInCompanyId = sessionStorage.getItem(CONSTANT.LOGGED_IN_COMPANY_ID);
     if (loggedInCompanyId) {
       this.loggedInCompanyId = loggedInCompanyId;
       console.log('Company ID after browser refresh:', this.loggedInCompanyId);
@@ -129,7 +129,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       this.companyIdSubscription = this.companyService.companyId$.subscribe(
         (companyId: string) => {
           this.loggedInCompanyId = companyId;
-          sessionStorage.setItem('loggedInCompanyId', companyId);
+          sessionStorage.setItem(CONSTANT.LOGGED_IN_COMPANY_ID, companyId);
           this.fetchOperatorsData(companyId);
         }
       );
@@ -144,7 +144,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       this.companyIdSubscription.unsubscribe();
     }
     localStorage.removeItem(CONSTANT.OPERATORS_DATA_KEY);
-    sessionStorage.removeItem('loggedInCompanyId');
+    sessionStorage.removeItem(CONSTANT.LOGGED_IN_COMPANY_ID);
   }
 
   async generatePDF() {
@@ -287,8 +287,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
     const apiUrl = `${CONSTANT.API_OPERATOR_URL}/${companyId}`;
     console.log(`Making API call to ${apiUrl}`);
 
-    this.http
-      .get<Operator[]>(apiUrl)
+    this.http.get<Operator[]>(apiUrl)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(
         (response) => {
@@ -336,17 +335,17 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       role3: false,
     };
 
-    if (formValue.role === 'role1') {
+    if (formValue.role === CONSTANT.ROLE_1) {
       newOperator.role1 = true;
-    } else if (formValue.role === 'role2') {
+    } else if (formValue.role === CONSTANT.ROLE_2) {
       newOperator.role2 = true;
-    } else if (formValue.role === 'role3') {
+    } else if (formValue.role === CONSTANT.ROLE_3) {
       newOperator.role3 = true;
     }
 
 
     const selectedRole = newOperator.role;
-    const apiUrl = `http://localhost:5000/api/operator`;
+    const apiUrl = `${CONSTANT.API_OPERATOR_ADD_URL}`;
 
     console.log('Sending POST request to:', apiUrl);
     console.log('Request body:', newOperator);
@@ -374,7 +373,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
           this.newOperatorForm.reset();
         },
         (error) => {
-          console.error('Error adding new operator:', error);
+          console.error(CONSTANT.ERROR_ADDING_OPERATOR, error);
         }
       );
   }
@@ -387,7 +386,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
 
   deleteOperator(operator: Operator) {
 
-    const apiUrl = `http://localhost:5000/api/operator/${operator.operatorId}`;
+    const apiUrl = `${CONSTANT.API_OPERATOR_ADD_URL}/${operator.operatorId}`;
     console.log(`Sending DELETE request to ${apiUrl}`);
 
     this.http
@@ -405,7 +404,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
 
         },
         (error) => {
-          console.error('Error deleting operator:', error);
+          console.error(CONSTANT.ERROR_DELETING_OPERATOR, error);
         }
       );
   }
@@ -423,7 +422,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
         contactInfo: { phone: operator.phone },
         credentials: { username: operator.username },
         password: operator.password,
-        role: operator.role1 ? 'role1' : operator.role2 ? 'role2' : 'role3'
+        role: operator.role1 ? CONSTANT.ROLE_1 : operator.role2 ? CONSTANT.ROLE_2 : CONSTANT.ROLE_3
       });
     }, 0);
   }
@@ -445,28 +444,28 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
       role3: operator.role3,
     };
 
-    if (formValue.role === 'role1') {
+    if (formValue.role === CONSTANT.ROLE_1) {
       editedOperator.role1 = true;
       editedOperator.role2 = false;
       editedOperator.role3 = false;
-    } else if (formValue.role === 'role2') {
+    } else if (formValue.role === CONSTANT.ROLE_2) {
       editedOperator.role1 = false;
       editedOperator.role2 = true;
       editedOperator.role3 = false;
-    } else if (formValue.role === 'role3') {
+    } else if (formValue.role === CONSTANT.ROLE_3) {
       editedOperator.role1 = false;
       editedOperator.role2 = false;
       editedOperator.role3 = true;
     }
 
     const selectedRole = editedOperator.role;
-    const apiUrl = `http://localhost:5000/api/operator/${operator.operatorId}`;
+    const apiUrl = `${CONSTANT.API_OPERATOR_ADD_URL}/${operator.operatorId}`;
     console.log('Sending PUT request to:', apiUrl);
     console.log('Request body:', editedOperator);
 
     this.http
       .put<Operator>(apiUrl, editedOperator)
-      .pipe(takeUntil(this.unsubscribe$))
+      // .pipe(takeUntil(this.unsubscribe$))
       .subscribe(
         (response) => {
           console.log('Operator updated:', response);
@@ -479,7 +478,7 @@ export class OperatorsGridComponent implements OnInit, OnDestroy {
           this.editOperatorForm.reset();
         },
         (error) => {
-          console.error('Error updating operator:', error);
+          console.error(CONSTANT.ERROR_UPDATING_OPERATOR, error);
         }
       );
   }
