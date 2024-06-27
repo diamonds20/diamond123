@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastModule } from '@coreui/angular';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { UserService } from 'src/utils/user.service';
 import { CONSTANT } from 'src/constants/constants';
 import { CompanyService } from 'src/utils/company.service';
 import { getOperatorRoles } from 'src/utils/operators.service';
+import { AuthService } from 'src/utils/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent {
     private router: Router,
     private userService: UserService,
     private companyService: CompanyService,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
@@ -43,14 +45,22 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit() {
+    // Check if the user is already logged in
+    if (this.authService.isLoggedIn()) {
+      console.log('User is already logged in, redirecting to dashboard');
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
   handleSuccessfulLogin(message: string, userRole: string, navRoute: string, token: string, response: any) {
     this.successMessage = message;
     this.userService.setUserRole(userRole);
-    
+
     if (userRole === CONSTANT.COMPANY) {
       const companyId = response.companyId; // Assuming the company ID is in the response
       this.companyService.setCompanyId(companyId);
-      const companyName = response.name; 
+      const companyName = response.name;
       this.userService.setCompanyName(companyName); // For company users
     } else {
       this.userService.setCompanyName(''); // For non-company users
@@ -59,7 +69,7 @@ export class LoginComponent {
     if (userRole === CONSTANT.OPERATOR) {
       const operatorRoles = getOperatorRoles(response);
       const operatorName = response.name;
-      
+
       this.userService.setOperatorName(operatorName);
       this.userService.setOperatorRole(operatorRoles);
     }
@@ -71,11 +81,11 @@ export class LoginComponent {
     // } else if (response.role3) {
     //   navRoute = '/operator/outwards';
     // }
-  
+    // this.onLoginSuccess(token);
     this.router.navigate(['/dashboard']);
     setToken(token);
-    }
-  
+  }
+
 
   login() {
     if (this.loginForm.valid) {
@@ -99,6 +109,11 @@ export class LoginComponent {
           } else {
             this.error = CONSTANT.FAILURE_WHILE_LOGIN;
           }
+          // this.onLoginSuccess(response.token);
+          const isAuthenticated = this.performAuthentication(); // Implement your authentication logic
+          if (isAuthenticated) {
+            this.authService.login();
+          }
         },
         (error) => {
           if (error.status === 401) {
@@ -111,5 +126,18 @@ export class LoginComponent {
       );
     }
   }
+
+
+  private performAuthentication(): boolean {
+    // Implement your authentication logic here
+    // For example, make an API call to authenticate the user
+    // Return true if the authentication is successful, false otherwise
+    return true; // Replace with your actual authentication logic
+  }
+
+  // onLoginSuccess(token: string) {
+  //   this.authService.login(token);
+  //   this.router.navigate(['/dashboard']);
+  // }
 }
 

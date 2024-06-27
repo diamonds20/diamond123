@@ -93,9 +93,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         }),
       )
       // Check if button states exist in session storage
-    const inwardsButtonState = sessionStorage.getItem('showInwardsButton');
-    const compareButtonState = sessionStorage.getItem('showCompareButton');
-    const outwardsButtonState = sessionStorage.getItem('showOutwardsButton');
+    const inwardsButtonState = localStorage.getItem('showInwardsButton');
+    const compareButtonState = localStorage.getItem('showCompareButton');
+    const outwardsButtonState = localStorage.getItem('showOutwardsButton');
 
     if (inwardsButtonState && compareButtonState && outwardsButtonState) {
       this.showInwardsButton = JSON.parse(inwardsButtonState);
@@ -111,7 +111,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
           this.showInwardsButton = roles.includes('Role 1');
           this.showCompareButton = roles.includes('Role 2');
           this.showOutwardsButton = roles.includes('Role 3');
-          this.setButtonStatesInSessionStorage();
+          this.setButtonStatesInLocalStorage();
           this.cdr.detectChanges();
         })
       );
@@ -149,9 +149,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     localStorage.removeItem('showOperatorsGridButton');
-    sessionStorage.removeItem('showInwardsButton');
-    sessionStorage.removeItem('showCompareButton');
-    sessionStorage.removeItem('showOutwardsButton');
+    localStorage.removeItem('showInwardsButton');
+    localStorage.removeItem('showCompareButton');
+    localStorage.removeItem('showOutwardsButton');
   }
 
   navigateToOperatorsGrid() {
@@ -183,10 +183,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     localStorage.setItem('showOperatorsGridButton', JSON.stringify(state));
   }
 
-  private setButtonStatesInSessionStorage() {
-    sessionStorage.setItem('showInwardsButton', JSON.stringify(this.showInwardsButton));
-    sessionStorage.setItem('showCompareButton', JSON.stringify(this.showCompareButton));
-    sessionStorage.setItem('showOutwardsButton', JSON.stringify(this.showOutwardsButton));
+  private setButtonStatesInLocalStorage() {
+    localStorage.setItem('showInwardsButton', JSON.stringify(this.showInwardsButton));
+    localStorage.setItem('showCompareButton', JSON.stringify(this.showCompareButton));
+    localStorage.setItem('showOutwardsButton', JSON.stringify(this.showOutwardsButton));
   }
 
   onScrollbarUpdate($event: any) {

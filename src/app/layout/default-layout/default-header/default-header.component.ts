@@ -1,6 +1,8 @@
 import { Component, Input, DestroyRef, inject, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../../../utils/user.service';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/utils/auth.service';
 import {
   AvatarComponent,
   BadgeComponent,
@@ -45,7 +47,7 @@ export class DefaultHeaderComponent extends HeaderComponent {
   readonly colorMode = this.#colorModeService.colorMode;
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
 
-  constructor(private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone, private userService: UserService) {
+  constructor(private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone, private userService: UserService, private router: Router, private authService: AuthService) {
     super();
     this.#colorModeService.localStorageItemName.set('coreui-free-angular-admin-template-theme-default');
     this.#colorModeService.eventName.set('ColorSchemeChange');
@@ -104,4 +106,9 @@ export class DefaultHeaderComponent extends HeaderComponent {
       localStorage.setItem('welcomeMessage', message);
     }
 
+    logout(): void {
+      this.router.navigate(['/login']);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('auth_token');
+    }
 }
