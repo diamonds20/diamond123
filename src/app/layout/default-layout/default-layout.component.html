@@ -46,6 +46,14 @@
   >
     <i class="bi bi-person-fill"></i> Outwards
   </button>
+  <!-- New Diamonds button -->
+  <button
+  [hidden]="!isOperator"
+  class="btn btn-transparent px-4 operator-button sm"
+  (click)="navigateToDiamondsPage()"
+  >
+  <i class="bi bi-gem"></i> Diamonds
+  </button>
   </div>
   </ng-scrollbar>
   @if (!sidebar1.narrow) {

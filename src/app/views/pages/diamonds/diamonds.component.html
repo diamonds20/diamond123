@@ -1,0 +1,121 @@
+
+<div class="container">
+  
+  <!-- Diamond selection view -->
+  <div *ngIf="!selectedDiamond" class="diamonds-container">
+    <div class="diamond-item" (click)="selectDiamond('diamond123')">
+      <img src="assets/images/ring31.jpg" alt="Diamond 1" class="diamond-img">
+      <p>Diamond 1</p>
+    </div>
+    <div class="diamond-item" (click)="selectDiamond('diamond456')">
+      <img src="assets/images/ring72.jpg" alt="Diamond 2" class="diamond-img">
+      <p>Diamond 2</p>
+    </div>
+  </div>
+
+  <!-- Diamond detail view -->
+  <div class="container" *ngIf="selectedDiamond">
+    <div class="main-content">
+      <div class="viewer-container">
+        <div class="gif-container">
+          <img #diamondGif [src]="gifUrl" alt="Diamond GIF" class="diamond-gif">
+        </div>
+        <div class="boxes-container">
+          <div class="box" *ngFor="let box of boxes">
+            <!-- <img [src]="diamondImageUrl" alt="Diamond" class="diamonds-img"> -->
+             <p class="icon">Icon</p>
+            <p class="text">Text</p>
+          </div>
+        </div>
+        <div class="circles-container">
+          <div class="circle" *ngFor="let circle of [1,2,3,4,5]">
+            <span class="circle-icon">Icon</span>
+            <span class="circle-text">Text</span>
+          </div>
+        </div>
+        <div class="circles-container">
+          <div class="circle" *ngFor="let circle of [1,2,3,4,5]">
+            <span class="circle-icon">Icon</span>
+            <span class="circle-text">Text</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections -->
+      <div class="sections">
+      <div class="section">
+        <h6>Section - 1</h6>
+        <div class="section-content">
+          <table class="section-table">
+            <tr *ngFor="let row of [1,2,3,4,5,6,7]">
+              <td class="icon-cell">Icon</td>
+              <td class="text-cell">Text</td>
+              <td class="icon-cell">Icon</td>
+              <td class="text-cell">Text</td>
+              <td class="icon-cell">Icon</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+        <div class="section">
+          <h6>Section - 2</h6>
+          <div class="section-content">
+            <table class="section-table">
+              <tr *ngFor="let row of [1,2,3]">
+                <td class="icon-cell">Icon</td>
+                <td class="text-cell">Text</td>
+                <td class="icon-cell">Icon</td>
+                <td class="text-cell">Text</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="section scrollable-section">
+          <h6>Section - 3</h6>
+         <div class="section-content">
+            <table class="section-table">
+              <tr *ngFor="let row of [1,2,3,4,5,6,7,8,9]">
+                <td class="icon-cell">Icon</td>
+                <td class="text-cell">Text</td>
+                <td class="icon-cell">Icon</td>
+                <td class="text-cell">Text</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+<br/><br/><br/>
+
+  <!-- Portrait View -->
+  <div class="portrait-container" *ngIf="selectedDiamond">
+  <div class="main-content-portrait-view">
+    <div class="viewer-container-portrait-view">
+      <div class="gif-container-portrait-view">
+        <img #diamondGif [src]="gifUrl" alt="Diamond GIF" class="diamond-gif">
+      </div>
+      <div class="boxes-container-portrait-view">
+        <div class="box" *ngFor="let box of boxes">
+          <p class="icon">Icon</p>
+          <p class="text">Text</p>
+        </div>
+      </div>
+      <div class="circles-container">
+        <div class="circle" *ngFor="let circle of [1,2,3,4,5]">
+          <span class="circle-icon">Icon</span>
+          <span class="circle-text">Text</span>
+        </div>
+      </div>
+      <div class="circles-container">
+        <div class="circle" *ngFor="let circle of [1,2,3,4,5]">
+          <span class="circle-icon">Icon</span>
+          <span class="circle-text">Text</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  

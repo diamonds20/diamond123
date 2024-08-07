@@ -1,0 +1,268 @@
+.diamonds-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.diamond-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+.diamond-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-left: 100px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-content {
+  display: flex;
+  width: 100%;
+}
+
+.viewer-container {
+  height: 100%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}
+
+.gif-container {
+  width: 100%;
+  height: 300px; 
+  background-color: #f0f0f0; 
+  margin-bottom: 20px;
+  border: 1px solid #999; 
+}
+
+.diamond-gif {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.boxes-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.box {
+  height: 80px;
+  width: 80px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  margin: auto;
+}
+
+.circles-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.circle {
+  flex: 0 0 18%;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sections {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+}
+
+.section {
+  background-color: #f5f5f5;
+  margin-bottom: 10px;
+  padding: 10px;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
+.scrollable-section .section-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.section-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    padding: 5px;
+    border: 1px solid #ddd;
+    font-size: 12px;
+  }
+
+  .icon-cell {
+    width: 30px;
+    text-align: center;
+  }
+
+  .text-cell {
+    width: 50%;
+  }
+}
+
+.scrollable-section {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.scrollable-section .section-content {
+  height: 100%;
+}
+
+.scrollable-section .section-table {
+  width: 100%;
+}
+
+.portrait-container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.main-content-portrait-view {
+  display: flex;
+  width: 60%;
+}
+
+.viewer-container-portrait-view {
+  height: 100%;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}
+
+.gif-container-portrait-view {
+  width: 100%;
+  height: 300px; // Adjust as needed
+  background-color: #f0f0f0; // Placeholder color
+  margin-bottom: 20px;
+  border: 1px solid #999;
+}
+
+.boxes-container-portrait-view {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+  }
+
+  .viewer-container {
+    width: 50%;
+  }
+
+  .sections {
+    width: 50%;
+  }
+
+  .gif-container {
+    height: 300px;
+  }
+
+  .boxes-container {
+    .box {
+      height: 80px;
+      width: 80px;
+    }
+  }
+}
+
+// Mobile styles (for smaller screens)
+@media screen and (max-width: 480px) {
+  .diamonds-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .diamond-item {
+    margin-bottom: 20px;
+  }
+
+  .main-content {
+    flex-direction: column;
+  }
+
+  .viewer-container {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .sections {
+    width: 100%;
+  }
+
+  .gif-container {
+    height: 200px;
+  }
+
+  .boxes-container {
+    flex-wrap: wrap;
+    .box {
+      width: calc(50% - 10px);
+      margin-bottom: 10px;
+    }
+  }
+
+  .circles-container {
+    flex-wrap: wrap;
+    .circle {
+      flex: 0 0 30%;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .portrait-container {
+    flex-direction: column;
+  }
+
+  .main-content-portrait-view {
+    width: 100%;
+  }
+
+  .viewer-container-portrait-view {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+}

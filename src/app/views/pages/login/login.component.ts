@@ -73,16 +73,7 @@ export class LoginComponent {
       this.userService.setOperatorName(operatorName);
       this.userService.setOperatorRole(operatorRoles);
     }
-
-    // if (response.role1) {
-    //   navRoute = '/operator/inwards';
-    // } else if (response.role2) {
-    //   navRoute = '/operator/compare';
-    // } else if (response.role3) {
-    //   navRoute = '/operator/outwards';
-    // }
-    // this.onLoginSuccess(token);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/diamonds']);
     setToken(token);
   }
 

@@ -178,6 +178,12 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  navigateToDiamondsPage() {
+    if (this.isOperator) {
+      this.router.navigate(['/diamonds']);
+    }
+  }
+
 
   private setButtonStateInLocalStorage(state: boolean) {
     localStorage.setItem('showOperatorsGridButton', JSON.stringify(state));

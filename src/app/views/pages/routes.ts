@@ -22,4 +22,11 @@ export const routes: Routes = [
       title: 'Login Page'
     }
   },
+  {
+    path: 'diamonds',
+    loadComponent: () => import('./diamonds/diamonds.component').then(m => m.DiamondsComponent),
+    data: {
+      title: 'Diamonds Page'
+    }
+  }
 ];

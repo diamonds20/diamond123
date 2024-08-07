@@ -34,5 +34,6 @@ export const routes: Routes = [
   { path: '500', loadComponent: () => import('./views/pages/page500/page500.component').then(m => m.Page500Component), data: { title: 'Page 500' } },
   { path: '', redirectTo: 'login', pathMatch: 'full' }, 
   { path: '404', loadComponent: () => import('./views/pages/page404/page404.component').then(m => m.Page404Component), data: { title: 'Page 404' } },
+  { path: 'diamonds', loadComponent: () => import('./views/pages/diamonds/diamonds.component').then(m => m.DiamondsComponent), data: { title: 'Diamonds Page' } },
   { path: '**', redirectTo: '404' }
 ];

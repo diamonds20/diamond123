@@ -1,7 +1,15 @@
 <!-- <app-widgets-dropdown /> -->
- <c-card class="m-4">
+ <!-- <c-card class="m-4"> -->
   <!-- <div>
     <h1>{{ welcomeMessage }}</h1>
   </div> -->
-    </c-card>
+    <!-- </c-card> -->
+
+    <ng-container *ngIf="isOperator">
+      <h2>Users Dashboard</h2>
+      <canvas id="myChart"></canvas>
+    </ng-container>
+
+    <iframe src="/diamonds?123=" width="100%" height="500px"></iframe>
+
   
