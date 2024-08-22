@@ -180,9 +180,15 @@
   margin-bottom: 20px;
 }
 
-@media screen and (min-width: 1024px) {
+// Landscape view (for larger screens)
+@media screen and (min-width: 768px) {
   .container {
-    max-width: 1200px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .main-content {
+    flex-direction: row;
   }
 
   .viewer-container {
@@ -193,61 +199,42 @@
     width: 50%;
   }
 
-  .gif-container {
-    height: 300px;
-  }
-
-  .boxes-container {
-    .box {
-      height: 80px;
-      width: 80px;
-    }
+  // Hide portrait view
+  .portrait-container {
+    display: none;
   }
 }
 
-// Mobile styles (for smaller screens)
-@media screen and (max-width: 480px) {
-  .diamonds-container {
+// Portrait view (for smaller screens)
+@media screen and (max-width: 767px) {
+  .container {
     flex-direction: column;
-    align-items: center;
-  }
-
-  .diamond-item {
-    margin-bottom: 20px;
   }
 
   .main-content {
     flex-direction: column;
   }
 
-  .viewer-container {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 20px;
-  }
-
-  .sections {
+  .viewer-container, .sections {
     width: 100%;
   }
 
-  .gif-container {
-    height: 200px;
+  // Show portrait view
+  .portrait-container {
+    display: block;
   }
 
-  .boxes-container {
-    flex-wrap: wrap;
-    .box {
-      width: calc(50% - 10px);
-      margin-bottom: 10px;
-    }
+  // Hide landscape view
+  .container > .main-content {
+    display: none;
   }
 
-  .circles-container {
-    flex-wrap: wrap;
-    .circle {
-      flex: 0 0 30%;
-      margin-bottom: 10px;
-    }
+  .main-content-portrait-view {
+    width: 100%;
+  }
+
+  .viewer-container-portrait-view {
+    width: 100%;
   }
 }
 

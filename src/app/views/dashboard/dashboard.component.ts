@@ -4,7 +4,8 @@ import { Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, Writa
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
 import { UserService } from 'src/utils/user.service';
-import { ApiService } from '../../../utils/api.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+// import { ApiService } from '../../../utils/api.service';
 import { Chart } from 'chart.js/auto';
 import {
   AvatarComponent,
@@ -44,14 +45,14 @@ import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 //   color: string;
 // }
 
-interface WeatherData {
-  city: string;
-  temp: number;
-  humidity: number;
-  windSpeed: number;
-  pressure: number;
-  cloudiness: number;
-}
+// interface WeatherData {
+//   city: string;
+//   temp: number;
+//   humidity: number;
+//   windSpeed: number;
+//   pressure: number;
+//   cloudiness: number;
+// }
 
 @Component({
   templateUrl: 'dashboard.component.html',
@@ -59,11 +60,12 @@ interface WeatherData {
   standalone: true,
   imports: [WidgetsDropdownComponent, CommonModule, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
 })
-export class DashboardComponent implements OnInit, AfterViewInit  {
-  chart: Chart | undefined;
-  isOperator: boolean = false;
-  error: string | null = null;
-  loading: boolean = false;
+export class DashboardComponent implements OnInit {
+  // chart: Chart | undefined;
+  // isOperator: boolean = false;
+  // error: string | null = null;
+  // loading: boolean = false;
+  diamondsUrl: SafeResourceUrl;
 
   // readonly #destroyRef: DestroyRef = inject(DestroyRef);
   // readonly #document: Document = inject(DOCUMENT);
@@ -163,136 +165,138 @@ export class DashboardComponent implements OnInit, AfterViewInit  {
   //   trafficRadio: new FormControl('Month')
   // });
 
-  constructor(private apiService: ApiService, private userService: UserService) { }
+  constructor(private userService: UserService, private sanitizer: DomSanitizer) {
+    this.diamondsUrl = this.sanitizer.bypassSecurityTrustResourceUrl('diamonds');
+   }
 
   ngOnInit() {
-    this.checkUserRole();
+    // this.checkUserRole();
   }
 
-  ngAfterViewInit() {
-    if (this.isOperator) {
-      this.fetchWeatherDataAndCreateChart();
-    }
-  }
+//   ngAfterViewInit() {
+//     if (this.isOperator) {
+//       this.fetchWeatherDataAndCreateChart();
+//     }
+//   }
 
-  checkUserRole() {
-    const userRole = this.userService.getUserRole();
-    this.isOperator = userRole === 'operator';
-    console.log('User role:', userRole, 'Is operator:', this.isOperator);
-  }
+//   checkUserRole() {
+//     const userRole = this.userService.getUserRole();
+//     this.isOperator = userRole === 'operator';
+//     console.log('User role:', userRole, 'Is operator:', this.isOperator);
+//   }
 
-  fetchWeatherDataAndCreateChart() {
-    this.loading = true;
-    this.error = null;
-    const cities = ['London', 'New York', 'Tokyo', 'Paris', 'Sydney'];
-    const weatherData: { city: string, temp: number }[] = [];
+//   fetchWeatherDataAndCreateChart() {
+//     this.loading = true;
+//     this.error = null;
+//     const cities = ['London', 'New York', 'Tokyo', 'Paris', 'Sydney'];
+//     const weatherData: { city: string, temp: number }[] = [];
   
-    let completedRequests = 0;
-    cities.forEach(city => {
-      this.apiService.getWeatherData(city).subscribe({
-        next: (data: any) => {
-          weatherData.push({ city: city, temp: data.main.temp });
-          completedRequests++;
-          if (completedRequests === cities.length) {
-            this.createChart(weatherData);
-            this.loading = false;
-          }
-        },
-        error: (error) => {
-          console.error(`Error fetching data for ${city}:`, error);
-          this.error = `Failed to fetch data for ${city}. ${error.message}`;
-          this.loading = false;
-        }
-      });
-    });
-  }
+//     let completedRequests = 0;
+//     cities.forEach(city => {
+//       this.apiService.getWeatherData(city).subscribe({
+//         next: (data: any) => {
+//           weatherData.push({ city: city, temp: data.main.temp });
+//           completedRequests++;
+//           if (completedRequests === cities.length) {
+//             this.createChart(weatherData);
+//             this.loading = false;
+//           }
+//         },
+//         error: (error) => {
+//           console.error(`Error fetching data for ${city}:`, error);
+//           this.error = `Failed to fetch data for ${city}. ${error.message}`;
+//           this.loading = false;
+//         }
+//       });
+//     });
+//   }
   
-  createChart(weatherData: { city: string, temp: number }[]) {
-    const ctx = document.getElementById('myChart') as HTMLCanvasElement;
-    if (!ctx) {
-      console.error('Canvas element not found');
-      return;
-    }
+//   createChart(weatherData: { city: string, temp: number }[]) {
+//     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
+//     if (!ctx) {
+//       console.error('Canvas element not found');
+//       return;
+//     }
 
-    const labels = weatherData.map(data => data.city);
-    const temperatures = weatherData.map(data => data.temp);
+//     const labels = weatherData.map(data => data.city);
+//     const temperatures = weatherData.map(data => data.temp);
 
-    if (this.chart) {
-      this.chart.destroy();
-    }
+//     if (this.chart) {
+//       this.chart.destroy();
+//     }
 
-    this.chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Temperature (°C)',
-          data: temperatures,
-          backgroundColor: temperatures.map(temp => this.getColorForTemperature(temp)),
-          borderColor: 'rgba(0, 0, 0, 0.1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'City Temperature Comparison'
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `Temperature: ${context.formattedValue}°C`
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: false,
-            title: {
-              display: true,
-              text: 'Temperature (°C)'
-            },
-            ticks: {
-              callback: (value) => `${value}°C`
-            }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'City'
-            }
-          }
-        },
-        animation: {
-          duration: 1500,
-          easing: 'easeInOutQuart'
-        }
-      }
-    });
+//     this.chart = new Chart(ctx, {
+//       type: 'line',
+//       data: {
+//         labels: labels,
+//         datasets: [{
+//           label: 'Temperature (°C)',
+//           data: temperatures,
+//           backgroundColor: temperatures.map(temp => this.getColorForTemperature(temp)),
+//           borderColor: 'rgba(0, 0, 0, 0.1)',
+//           borderWidth: 1
+//         }]
+//       },
+//       options: {
+//         responsive: true,
+//         plugins: {
+//           legend: {
+//             position: 'top',
+//           },
+//           title: {
+//             display: true,
+//             text: 'City Temperature Comparison'
+//           },
+//           tooltip: {
+//             callbacks: {
+//               label: (context) => `Temperature: ${context.formattedValue}°C`
+//             }
+//           }
+//         },
+//         scales: {
+//           y: {
+//             beginAtZero: false,
+//             title: {
+//               display: true,
+//               text: 'Temperature (°C)'
+//             },
+//             ticks: {
+//               callback: (value) => `${value}°C`
+//             }
+//           },
+//           x: {
+//             title: {
+//               display: true,
+//               text: 'City'
+//             }
+//           }
+//         },
+//         animation: {
+//           duration: 1500,
+//           easing: 'easeInOutQuart'
+//         }
+//       }
+//     });
     
-    console.log('Chart created:', this.chart);
-  }
+//     console.log('Chart created:', this.chart);
+//   }
 
-  getColorForTemperature(temp: number): string {
-    // Define color ranges for temperatures
-    if (temp < 0) return 'rgba(0, 0, 255, 0.6)';  // Cold: Blue
-    if (temp < 10) return 'rgba(0, 255, 255, 0.6)';  // Cool: Cyan
-    if (temp < 20) return 'rgba(0, 255, 0, 0.6)';  // Mild: Green
-    if (temp < 30) return 'rgba(255, 255, 0, 0.6)';  // Warm: Yellow
-    return 'rgba(255, 0, 0, 0.6)';  // Hot: Red
-  }
+//   getColorForTemperature(temp: number): string {
+//     // Define color ranges for temperatures
+//     if (temp < 0) return 'rgba(0, 0, 255, 0.6)';  // Cold: Blue
+//     if (temp < 10) return 'rgba(0, 255, 255, 0.6)';  // Cool: Cyan
+//     if (temp < 20) return 'rgba(0, 255, 0, 0.6)';  // Mild: Green
+//     if (temp < 30) return 'rgba(255, 255, 0, 0.6)';  // Warm: Yellow
+//     return 'rgba(255, 0, 0, 0.6)';  // Hot: Red
+//   }
 
-  handleCORSError(error: any) {
-    console.log('CORS Error Details:', error);
-    if (error.name === 'HttpErrorResponse' && error.status === 0) {
-      this.error += ' The server is not allowing cross-origin requests.';
-    }
-  }
-}
+//   handleCORSError(error: any) {
+//     console.log('CORS Error Details:', error);
+//     if (error.name === 'HttpErrorResponse' && error.status === 0) {
+//       this.error += ' The server is not allowing cross-origin requests.';
+//     }
+//   }
+ }
 
   // initCharts(): void {
   //   this.mainChart = this.#chartsData.mainChart;

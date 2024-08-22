@@ -14,6 +14,7 @@ import { CONSTANT } from 'src/constants/constants';
 import { CompanyService } from 'src/utils/company.service';
 import { getOperatorRoles } from 'src/utils/operators.service';
 import { AuthService } from 'src/utils/auth.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -31,18 +32,22 @@ export class LoginComponent {
   successMessage: string = '';
   isLoginClicked: boolean = false;
 
+  diamondsUrl: SafeResourceUrl;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
     private userService: UserService,
     private companyService: CompanyService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: DomSanitizer
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required, Validators.minLength(3), Validators.pattern(CONSTANT.passwordPattern)]],
     });
+    this.diamondsUrl = this.sanitizer.bypassSecurityTrustResourceUrl('diamonds');
   }
 
   ngOnInit() {

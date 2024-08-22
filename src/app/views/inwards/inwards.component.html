@@ -2,52 +2,13 @@
   <h2>{{ operatorName }} ({{ operatorRole }})</h2>
 </div>
 
-<!-- Image Resizing -->
-<!-- <div>
-  <h3>Optimized Images:</h3>
-  <div class="image-grid">
-    <div *ngFor="let image of optimizedImages" class="image-container">
-      <img [src]="image" alt="Optimized Image" (error)="onImageError($event)">
-    </div>
-  </div>
-  <p *ngIf="optimizedImages.length === 0">No optimized images to display.</p>
-</div> -->
-
 <!-- Normal Lazy Loading -->
-<!-- <div class="container">
-  <h3> Lazy Loaded Image: </h3>
-  <cdk-virtual-scroll-viewport itemSize="300" class="image-container">
-    <div *cdkVirtualFor="let image of images; let i = index" class="image-item">
-      <img [src]="image.src" [alt]="image.alt">
-      <p>Image {{i + 1}}</p>
-    </div>
-  </cdk-virtual-scroll-viewport>
-  <p *ngIf="images.length === 0">No images to display</p>
-</div> -->
-
-<!-- angular lib(ng-lazyload-image) -->
 <div class="container">
-  <!-- <h3> Lazy Loaded Image: </h3> -->
   <div class="image-grid">
-    <div *ngFor="let image of images" class="image-container">
-      <img [defaultImage]="defaultImage" [lazyLoad]="image" [offset]="100" (error)="onImageError($event)" alt="Lazy Loaded Image">
+    <div *ngFor="let image of images" class="image-container" #imageContainer [attr.data-image-id]="image.id">
+      <img *ngIf="image.loaded" [src]="image.url" (error)="onImageError($event)" alt="Placeholder Image">
+      <div *ngIf="!image.loaded" class="placeholder">Loading...</div>
     </div>
   </div>
   <p *ngIf="images.length === 0">No images to display</p>
 </div>
-
-<!-- Responsive images -->
-<!-- <div>
-  <h3> Responsive Image: </h3>
-  <div class="image-grid">
-    <div *ngFor="let image of images" class="image-container">
-      <picture>
-        <source media='(max-width: 600px)' srcset="{{ image.small }}">
-        <source media='(max-width: 1200px)' srcset="{{ image.medium }}">
-        <source media='(max-width: 1201px)' srcset="{{ image.large }}">
-        <img src="{{ image.src }}" alt="Responsive Image" (error)="onImageError($event)" loading="lazy">
-      </picture>
-    </div>
-  </div>
-  <p *ngIf="images.length === 0">No images to display</p>
-</div> -->

@@ -1,4 +1,4 @@
-<div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
+<div class="bg-light dark:bg-transparent mt-4 min-vh-100 d-flex flex-row align-items-center">
   <div class="container">
     <c-toast #toast="cToast" [autohide]="false" [visible]="isLoginClicked"
       class="align-items-center toast-position custom-toast" [ngClass]="{'error': error, 'success': successMessage}">
@@ -49,7 +49,12 @@
         </div>
       </div>
     </div>
+    <!-- Embedded iframe below the login box -->
+    <div class="Login-container">
+      <iframe [src]="diamondsUrl" width="100%" height="500px" frameborder="0" 
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
   </div>
 </div>
-
-<iframe src="/diamonds?123=" width="100%" height="500px"></iframe>
+<!-- <iframe src="/diamonds?123=" width="100%" height="500px"></iframe> -->
