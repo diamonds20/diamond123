@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
       with:
@@ -27,15 +27,19 @@ jobs:
       run: npm run test -- --configuration=ci
 
     - name: Build
-      run: npm run build -- --prod
+      run: npm run build -- --configuration production
+
+    - name: Update base href
+      run: sed -i 's/<base href="\/">/<base href="\/diamond123\/">/g' dist/coreui-free-angular-admin-template/index.html
 
     - name: Prepare for deployment
       run: |
         mkdir public
-        cp -R dist/coreui-free-angular-admin-template/* public/
+        cp -R dist/your-project-name/* public/
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
-      publish_dir: ./public
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        publish_branch: gh-pages 
