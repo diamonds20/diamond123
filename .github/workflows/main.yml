@@ -29,7 +29,13 @@ jobs:
     - name: Build
       run: npm run build -- --prod
 
+    - name: Prepare for deployment
+      run: |
+        mkdir public
+        cp -R dist/coreui-free-angular-admin-template/* public/
+
     - name: Deploy to GitHub Pages
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: npm run deploy 
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      publish_dir: ./public
