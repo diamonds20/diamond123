@@ -51,7 +51,7 @@ jobs:
     - name: Prepare for deployment
       run: |
         mkdir public
-        cp -R dist/your-project-name/* public/
+        cp -R dist/coreui-free-angular-admin-template/* public/
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
