@@ -15,7 +15,8 @@
     "start:proxy": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "ng deploy --base-href=/diamond123/"
   },
   "private": true,
   "dependencies": {
