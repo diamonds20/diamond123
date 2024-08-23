@@ -1,0 +1,33 @@
+name: CI/CD for Angular Project
+
+on:
+  push:
+    branches: [ template_ui ]
+  pull_request:
+    branches: [ template_ui ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm run test -- --configuration=ci
+
+    - name: Build
+      run: npm run build -- --prod
+
+    - name: Deploy to GitHub Pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npm run deploy 
