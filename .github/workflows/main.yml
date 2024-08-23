@@ -41,7 +41,7 @@ jobs:
       uses: browser-actions/setup-chrome@latest
 
     - name: Run tests
-      run: npm test -- --watch=false --browsers=ChromeHeadless --no-progress --verbose
+      run: npm test -- --watch=false --browsers=ChromeHeadless --no-progress
     - name: Build
       run: npm run build -- --configuration production
 
