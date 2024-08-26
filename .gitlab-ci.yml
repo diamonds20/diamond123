@@ -30,7 +30,7 @@ test:
     - apt-get install -y google-chrome-stable
   script:
     - CHROME_BIN=/usr/bin/google-chrome npm run test:ci
-    
+
 build:
   stage: build
   script:

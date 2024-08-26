@@ -15,7 +15,7 @@
     "start:proxy": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --karma-config=karma.conf.ci.js",
     "deploy": "ng deploy --base-href=/diamond123/"
   },
   "private": true,
