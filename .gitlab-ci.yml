@@ -20,7 +20,8 @@ install_dependencies:
 test:
   stage: test
   script:
-    - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - apt-get update && apt-get install -y chromium
+    - npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
 
 build:
   stage: build
