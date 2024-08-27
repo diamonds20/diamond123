@@ -10,8 +10,7 @@ describe('OperatorsGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NoopAnimationsModule],
-      declarations: [ OperatorsGridComponent ],
+      imports: [ OperatorsGridComponent, HttpClientTestingModule, NoopAnimationsModule ],
     })
     .compileComponents();
     

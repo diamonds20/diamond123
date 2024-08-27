@@ -11,8 +11,7 @@ describe('DiamondsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule],
-      declarations: [DiamondsComponent],
+      imports: [ DiamondsComponent, HttpClientTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
