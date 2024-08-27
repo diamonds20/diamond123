@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { OperatorsGridComponent } from './operators-grid.component';
 
@@ -9,7 +10,8 @@ describe('OperatorsGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OperatorsGridComponent, HttpClientTestingModule]
+      imports: [HttpClientTestingModule, NoopAnimationsModule],
+      declarations: [ OperatorsGridComponent ],
     })
     .compileComponents();
     

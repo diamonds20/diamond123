@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of } from 'rxjs';
 
 import { DiamondsComponent } from './diamonds.component';
 
@@ -9,16 +11,13 @@ describe('DiamondsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DiamondsComponent],
+      imports: [ HttpClientTestingModule],
+      declarations: [DiamondsComponent],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => 'mockValue'
-              }
-            }
+            paramMap: of({ get: () => 'testId' })
           }
         }
       ]
