@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ButtonModule, CardModule, FormModule, GridModule } from '@coreui/angular';
 import { LoginComponent } from './login.component';
@@ -13,7 +14,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [FormModule, CardModule, GridModule, ButtonModule, IconModule, LoginComponent],
+    imports: [FormModule, CardModule, GridModule, ButtonModule, IconModule, LoginComponent, NoopAnimationsModule],
     providers: [IconSetService]
 })
     .compileComponents();

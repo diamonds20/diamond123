@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { OperatorsGridComponent } from './operators-grid.component';
 
@@ -8,7 +9,7 @@ describe('OperatorsGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OperatorsGridComponent]
+      imports: [OperatorsGridComponent, HttpClientTestingModule]
     })
     .compileComponents();
     

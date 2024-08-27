@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { InwardsComponent } from './inwards.component';
 
@@ -8,7 +9,7 @@ describe('InwardsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InwardsComponent]
+      imports: [InwardsComponent, HttpClientTestingModule]
     })
     .compileComponents();
     

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { DiamondsComponent } from './diamonds.component';
 
@@ -8,7 +9,19 @@ describe('DiamondsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DiamondsComponent]
+      imports: [DiamondsComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => 'mockValue'
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
     
