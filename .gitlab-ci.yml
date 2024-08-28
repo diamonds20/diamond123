@@ -53,7 +53,8 @@ pages:
     - echo "Contents of dist directory:"
     - ls -R dist/
     - mkdir -p public
-    - if [ -d "dist/coreui-free-angular-admin-template" ]; then
+    - |
+      if [ -d "dist/coreui-free-angular-admin-template" ]; then
         if [ "$(ls -A dist/coreui-free-angular-admin-template)" ]; then
           cp -r dist/coreui-free-angular-admin-template/* public/
         else
