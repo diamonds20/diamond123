@@ -36,7 +36,7 @@ build:
   script:
     - echo "Current directory contents before build:"
     - ls -la
-    - npm run build -- --configuration production --base-href="https://Digibee_developers.gitlab.io/Diamond_ERP/"
+    - npm run build -- --configuration production --base-href="https://digibeeDeveloper.gitlab.io/Diamond_ERP/"
     - echo "Contents of dist directory after build:"
     - ls -R dist/
     - echo "Total size of dist directory:"
