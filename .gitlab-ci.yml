@@ -49,6 +49,7 @@ pages:
       - public
   only:
     - main
+    - template_ui
 
 # image: node:latest
 
