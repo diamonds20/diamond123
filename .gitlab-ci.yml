@@ -34,7 +34,13 @@ test:
 build:
   stage: build
   script:
+    - echo "Current directory contents before build:"
+    - ls -la
     - npm run build -- --configuration production --base-href="https://digibee_developer.gitlab.io/diamond_erp/"
+    - echo "Contents of dist directory after build:"
+    - ls -R dist/
+    - echo "Total size of dist directory:"
+    - du -sh dist/
   artifacts:
     paths:
       - dist/
@@ -42,8 +48,24 @@ build:
 pages:
   stage: deploy
   script:
+    - echo "Contents of current directory:"
+    - ls -la
+    - echo "Contents of dist directory:"
+    - ls -R dist/
     - mkdir -p public
-    - cp -r dist/coreui-free-angular-admin-template/* public/
+    - if [ -d "dist/coreui-free-angular-admin-template" ]; then
+        if [ "$(ls -A dist/coreui-free-angular-admin-template)" ]; then
+          cp -r dist/coreui-free-angular-admin-template/* public/
+        else
+          echo "Error: dist/coreui-free-angular-admin-template is empty"
+          exit 1
+        fi
+      else
+        echo "Error: dist/coreui-free-angular-admin-template does not exist"
+        exit 1
+      fi
+    - echo "Contents of public directory after copying:"
+    - ls -R public/
   artifacts:
     paths:
       - public
