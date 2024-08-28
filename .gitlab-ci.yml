@@ -34,7 +34,7 @@ test:
 build:
   stage: build
   script:
-    - npm run build -- --configuration production --base-href="https://<digibee_developer>.gitlab.io/<diamond_erp>/"
+    - npm run build -- --configuration production --base-href="https://digibee_developer.gitlab.io/diamond_erp/"
   artifacts:
     paths:
       - dist/
@@ -43,7 +43,7 @@ pages:
   stage: deploy
   script:
     - mkdir -p public
-    - cp -r dist/<diamond_erp>/* public/
+    - cp -r dist/diamond_erp/* public/
   artifacts:
     paths:
       - public
