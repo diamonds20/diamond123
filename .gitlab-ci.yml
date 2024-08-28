@@ -43,7 +43,7 @@ pages:
   stage: deploy
   script:
     - mkdir -p public
-    - cp -r dist/diamond_erp/* public/
+    - cp -r dist/diamond_erp-1/* public/
   artifacts:
     paths:
       - public
